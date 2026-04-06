@@ -1,0 +1,63 @@
+.settings-menu {
+    position: absolute;
+    top: 40px;
+    right: -2px;
+    background-color: #fff;
+    border: 2px solid #FCAEDA;
+    width: 180px;
+    display: none;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.settings-menu.open {
+    display: flex;
+}
+
+.settings-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.settings-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.settings-menu li:hover {
+    background-color: #FDE4F2;
+}
+
+.checkmark {
+    display: none;
+    color: #f06292;
+    font-weight: bold;
+}
+
+.settings-menu li.active .checkmark {
+    display: inline;
+}
+
+.has-submenu {
+    position: relative;
+}
+
+.submenu {
+    position: absolute;
+    left: -182px;
+    top: 0;
+    background-color: #fff;
+    border: 2px solid #FCAEDA;
+    width: 178px;
+    display: none;
+}
+
+.has-submenu:hover .submenu {
+    display: block;
+}

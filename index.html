@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="calculatorrr">
+  <title>PICK-ME Calculator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/conventer.css">
+</head>
+
+<body>
+  <h1>Calculator &lt;3 </h1>
+  <p>Welcome to the Pick-Me Calculator!! Hey… use me!!<br>
+    I'll calculate anything for you…♡♡♡ <br> I'm not like other
+    calculators!! &gt;_&lt; </p>
+
+  <div class="calculator">
+
+    <button class="toggle">⋮</button>
+
+    <div class="settings-menu">
+      <ul>
+        <li data-mode="basic" class="menu-item active">
+          Basic <span class="checkmark">✔</span>
+        </li>
+
+        <li data-mode="advanced" class="menu-item">
+          Advanced <span class="checkmark">✔</span>
+        </li>
+
+        <li class="has-submenu">
+          Converters
+          <ul class="submenu">
+            <li data-converter="length">Length converter <span class="checkmark">✔</span></li>
+            <li data-converter="weight">Weight and mass converter</li>
+            <li data-converter="area">Area converter</li>
+          </ul>
+        </li>
+
+        <li data-mode="numeral">Numeric system</li>
+
+      </ul>
+    </div>
+
+    <div class="display">
+      <div class="calc-lines">
+        <input type="text" class="input-line" value="9 - 9" readonly>
+        <div class="result-line">0</div>
+      </div>
+
+      <div class="converter-screen">
+        <div class="conv-row from">
+          <input type="number" class="conv-input" id="inputFrom">
+          <select class="conv-select" id="unitFrom">
+            <option value="mm">mm</option>
+            <option value="cm" selected>cm</option>
+            <option value="m">m</option>
+            <option value="km">km</option>
+          </select>
+        </div>
+        <div class="conv-divider"></div>
+        <div class="conv-row to">
+          <div class="conv-result" id="resultTo">0</div>
+          <select class="conv-select" id="unitTo">
+            <option value="mm">mm</option>
+            <option value="cm">cm</option>
+            <option value="m" selected>m</option>
+            <option value="km">km</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="grid-basic">
+
+      <button class="but-symb">C</button>
+      <button class="but-symb">( )</button>
+      <button class="but-symb">%</button>
+      <button class="but-symb">÷</button>
+
+      <button class="but-num">7</button>
+      <button class="but-num">8</button>
+      <button class="but-num">9</button>
+      <button class="but-symb">-</button>
+
+      <button class="but-num">4</button>
+      <button class="but-num">5</button>
+      <button class="but-num">6</button>
+      <button class="but-symb">*</button>
+
+      <button class="but-num">1</button>
+      <button class="but-num">2</button>
+      <button class="but-num">3</button>
+      <button class="but-symb">+</button>
+
+      <button class="but-symb">.</button>
+      <button class="but-num">0</button>
+      <button class="but-long">=</button>
+
+    </div>
+
+
+
+    <div class="grid-advanced">
+      <div class="mem-row">
+        <button class="but-mem">MC</button>
+        <button class="but-mem">MR</button>
+        <button class="but-mem">M+</button>
+        <button class="but-mem">M-</button>
+      </div>
+
+      <button class="but-long">C</button>
+      <button class="but-symb">( )</button>
+      <button class="but-symb">%</button>
+      <button class="but-symb">÷</button>
+
+      <button class="but-symb">+/-</button>
+      <button class="but-num">7</button>
+      <button class="but-num">8</button>
+      <button class="but-num">9</button>
+      <button class="but-symb">*</button>
+
+      <button class="but-symb">x!</button>
+      <button class="but-num">4</button>
+      <button class="but-num">5</button>
+      <button class="but-num">6</button>
+      <button class="but-symb">-</button>
+
+      <button class="but-symb">xⁿ</button>
+      <button class="but-num">1</button>
+      <button class="but-num">2</button>
+      <button class="but-num">3</button>
+      <button class="but-symb">+</button>
+
+      <button class="but-symb">√x</button>
+      <button class="but-num">.</button>
+      <button class="but-num">0</button>
+      <button class="but-long">=</button>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="converters-column">
+      <h1>Converters ♡</h1>
+        <p>блаблаблабла</p>
+      <div class="card">
+        
+        <h2>Length converter</h2>
+        <input type="text" class="card-input">
+        <div class="select-row">
+          <div class="select-group">
+            <label>From:</label>
+          <select>
+            <option value="mm">Millimeters</option>
+            <option value="cm">Centimeters</option>
+            <option value="m">Meters</option>
+            <option value="km">Kilometers</option>
+          </select>
+        </div>
+
+        <div class="select-group">
+          <label>To:</label>
+          <select>
+            <option value="mm">Millimeters</option>
+            <option value="cm">Centimeters</option>
+            <option value="m">Meters</option>
+            <option value="km">Kilometers</option>
+          </select>
+          </div>
+        </div>
+        <button class="btn-convert">Convert</button>
+        <p class="result-text">Result:</p>
+      </div>
+
+      <div class="card">
+        <h2>Weight and mass converter</h2>
+        <input type="text" class="card-input">
+        <div class="select-row">
+          <div class="select-group">
+            <label>From:</label>
+            <select>
+              <option value="gramms">gramms</option>
+              <option value="kilograms">kg</option>
+              <option value="tonna??">tonna??</option>
+              <option value="neznau">dalshe ne znau</option>
+            </select>
+          </div>
+
+          <div class="select-group">
+            <label>To:</label>
+            <select>
+              <option value="gramms">gramms</option>
+              <option value="kilograms">kg</option>
+              <option value="tonna??">tonna??</option>
+              <option value="neznau">dalshe ne znau</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-convert">Convert</button>
+        <p class="result-text">Result:</p>
+      </div>
+
+      <div class="card">
+        <h2>Area converter</h2>
+        <input type="text" class="card-input">
+        <div class="select-row">
+          <div class="select-group">
+            <label>From:</label>
+            <select>
+              <option value="mm2">Millimeters2</option>
+              <option value="cm2">Centimeters2</option>
+              <option value="m2">Meters2</option>
+              <option value="km2">Kilometers2</option>
+            </select>            
+          </div>
+
+          <div class="select-group">
+            <label>To:</label>
+            <select>
+              <option value="mm2">Millimeters2</option>
+              <option value="cm2">Centimeters2</option>
+              <option value="m2">Meters2</option>
+              <option value="km2">Kilometers2</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-convert">Convert</button>
+        <p class="result-text">Result:</p>
+      </div>
+    </div>
+
+    <div class="numeral-column">
+      <h1>Calculation with numeral systems</h1>
+    </div>
+  </div>
+
+  <script src="js/menu.js"></script>
+</body>
+
+</html>
