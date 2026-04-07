@@ -40,21 +40,31 @@ h1 {
   padding: 0 10px;
 }
 
+.calc-lines {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-end;
+  gap: 5px;
+  padding: 10px;
+}
+
 .input-line {
   background: transparent;
   border: none;
   color: #842323;
   font-family: inherit;
-  font-size: 26px;
+  font-size: 20px;
   text-align: right;
   width: 100%;
   outline: none;
   padding: 0;
-  margin-bottom: 4px;
+  margin-top: 5px;
 }
 
 .result-line {
-  font-size: 18px;
+  font-size: 35px;
+  line-height: 1.3;
   color: #842323;
   width: 100%;
   text-align: right;
