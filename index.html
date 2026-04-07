@@ -33,9 +33,9 @@
         <li class="has-submenu">
           Converters
           <ul class="submenu">
-            <li data-converter="length">Length converter <span class="checkmark">✔</span></li>
-            <li data-converter="weight">Weight and mass converter</li>
-            <li data-converter="area">Area converter</li>
+            <li data-converter="length">Length converter<span class="checkmark">✔</span></li>
+            <li data-converter="weight">Weight and mass converter<span class="checkmark">✔</span></li>
+            <li data-converter="area">Area converter<span class="checkmark">✔</span></li>
           </ul>
         </li>
 
@@ -46,7 +46,7 @@
 
     <div class="display">
       <div class="calc-lines">
-        <input type="text" class="input-line" value="9 - 9" readonly>
+        <input type="text" class="input-line" value="" readonly>
         <div class="result-line">0</div>
       </div>
 
@@ -75,31 +75,29 @@
     </div>
 
     <div class="grid-basic">
+      <button class="but-symb" data-key="C">C</button>
+      <button class="but-symb" data-key="()">( )</button>
+      <button class="but-symb" data-key="%">%</button>
+      <button class="but-symb" data-key="÷">÷</button>
 
-      <button class="but-symb">C</button>
-      <button class="but-symb">( )</button>
-      <button class="but-symb">%</button>
-      <button class="but-symb">÷</button>
+      <button class="but-num" data-key="7">7</button>
+      <button class="but-num" data-key="8">8</button>
+      <button class="but-num" data-key="9">9</button>
+      <button class="but-symb" data-key="×">×</button>
 
-      <button class="but-num">7</button>
-      <button class="but-num">8</button>
-      <button class="but-num">9</button>
-      <button class="but-symb">-</button>
+      <button class="but-num" data-key="4">4</button>
+      <button class="but-num" data-key="5">5</button>
+      <button class="but-num" data-key="6">6</button>
+      <button class="but-symb" data-key="-">-</button>
 
-      <button class="but-num">4</button>
-      <button class="but-num">5</button>
-      <button class="but-num">6</button>
-      <button class="but-symb">*</button>
+      <button class="but-num" data-key="1">1</button>
+      <button class="but-num" data-key="2">2</button>
+      <button class="but-num" data-key="3">3</button>
+      <button class="but-symb" data-key="+">+</button>
 
-      <button class="but-num">1</button>
-      <button class="but-num">2</button>
-      <button class="but-num">3</button>
-      <button class="but-symb">+</button>
-
-      <button class="but-symb">.</button>
-      <button class="but-num">0</button>
-      <button class="but-long">=</button>
-
+      <button class="but-symb" data-key=".">.</button>
+      <button class="but-num" data-key="0">0</button>
+      <button class="but-long" data-key="=">=</button>
     </div>
 
 
@@ -240,6 +238,7 @@
   </div>
 
   <script src="js/menu.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>
