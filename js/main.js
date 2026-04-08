@@ -11,6 +11,17 @@ for (let key of keys) {
     const value = key.dataset.key;
 
     key.addEventListener('click', () => {
+        if (activeConverterInput) {
+            if (value === "C") {
+                activeConverterInput.value = "";
+            } else if (/[0-9.]/.test(value)) {
+                if (value === "." && activeConverterInput.value.includes(".")) return;
+                activeConverterInput.value += value;
+            }
+            activeConverterInput.dispatchEvent(new Event('input'));
+            return; 
+        }
+
         if (justCalculated && /[0-9.]/.test(value)) {
             input = "";
             display_input.style.display = "none";
