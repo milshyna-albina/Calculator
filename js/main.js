@@ -1,4 +1,4 @@
-const keys = document.querySelectorAll('.but-num, .but-symb, .but-long');
+const keys = document.querySelectorAll('.but-num, .but-symb, .but-long, .but-mem');
 const display_input = document.querySelector('.input-line');
 const display_output = document.querySelector('.result-line');
 
@@ -6,6 +6,7 @@ let input = "";
 let lastResult = null;
 let justCalculated = false;
 let changingSign = false;
+let replaceNextNumber = false;
 
 for (let key of keys) {
     const value = key.dataset.key;
@@ -14,70 +15,56 @@ for (let key of keys) {
         if (justCalculated && /[0-9.]/.test(value)) {
             input = "";
             display_input.style.display = "none";
-            display_output.innerHTML = "";
             justCalculated = false;
         }
 
         if (value === "C") {
-            input = "";
+            const state = clear();
+            input = state.input;
+            display_output.innerHTML = state.out;
             display_input.innerHTML = "";
-            display_output.innerHTML = "0";
-        } else if (value === "=") {
-            if (input === "") return;
-            try {
-                let result = Function(`return ${PerpareInput(input)}`)();
-                if (!isFinite(result)) {
-                    display_output.innerHTML = "Undefined";
-                } else {
-                    display_output.innerHTML = CleanOutput(result);
-                }
-                display_input.style.display = "block";
-                display_input.innerHTML = CleanInput(input);
-                lastResult = result;
+        }
+        else if (value === "=") {
+            const res = calculate(input);
+            if (res === "Error" || !isFinite(res)) {
+                display_output.innerHTML = res === "Error" ? "Error" : "Undefined";
                 input = "";
-                justCalculated = true
-            } catch (e) {
-                display_output.innerHTML = "Error";
-                input = "";
-                justCalculated = true;
-            }
-        } else if (value === "+/-") {
-            if (justCalculated && lastResult !== null) {
-                input = lastResult.toString();
-                display_input.style.display = "none";
-                justCalculated = false;
-            }
-
-            if (input === "" || input === "0"){
-                return;
-            }
-
-            const bracketMatch = input.match(/\(-\d+\.?\d*\)$/);
-            if (bracketMatch) {
-                input = input.slice(0, -bracketMatch[0].length) + bracketMatch[0].slice(2, -1);
             } else {
-                const lastNumberMatch = input.match(/(\d+\.?\d*)$/);
+                display_output.innerHTML = format(res);
+                display_input.innerHTML = CleanInput(input);
+                display_input.style.display = "block";
+                lastResult = res;
+                input = "";
+            }
+            justCalculated = true;
+        }
+        else if (value === "+/-") {
+            input = toggleSign(input, lastResult, justCalculated);
+            justCalculated = false;
+            display_output.innerHTML = CleanInput(input);
+        } else if (value === "MR") {
+            let mem = memoryRecall();
+            if (mem === 0) {
+                input = "0";
+            } else {
+                const lastNumberMatch = input.match(/(\(-\d+\.?\d*\)?|(?<=[+×÷%-])-|\d+\.?\d*)$/);
                 if (lastNumberMatch) {
-                    let lastNumber = lastNumberMatch[0];
-                    let beforeNumber = input.substring(0, lastNumberMatch.index);
-                    let lastChar = beforeNumber.slice(-1);
-                    if (lastChar === "-") {
-                        let beforeMinus = beforeNumber.slice(0, -1);
-                        if (beforeMinus !== "" && !/[+×÷-]/.test(beforeMinus.slice(-1))) {
-                            input = beforeMinus + "+" + lastNumber;
-                        } else {
-                            input = beforeMinus + lastNumber;
-                        }
-                    }
-                    else if (lastChar === "+") {
-                        input = beforeNumber.slice(0, -1) + "-" + lastNumber;
-                    }
-                    else {
-                        input = beforeNumber + "(-" + lastNumber + ")";
-                    }
+                    input = input.substring(0, lastNumberMatch.index) + mem.toString();
+                } else {
+                    input += mem.toString();
                 }
             }
             display_output.innerHTML = CleanInput(input);
+        } else if (value === "MC") {
+            memoryClear();
+        } else if (value === "M+") {
+            let number = parseFloat(input || lastResult || 0);
+            memoryAdd(number);
+            replaceNextNumber = true;
+        } else if (value === "M-") {
+            let number = parseFloat(input || lastResult || 0);
+            memorySubtract(number);
+            replaceNextNumber = true;
         } else {
             if (/[+\-×÷%]/.test(value) || value === "+/-") {
                 if (justCalculated) {
@@ -86,11 +73,20 @@ for (let key of keys) {
                     justCalculated = false;
                 }
             }
-            if (ValidateInput(value)) {let lastChar = input.slice(-1);
+            if (ValidateInput(value)) {
+                if (replaceNextNumber && /[0-9.]/.test(value)) {
+                    input = input.replace(/\d+\.?\d*$/, "");
+                    replaceNextNumber = false;
+                }
+                const lastNumberMatch = input.match(/(\d+\.?\d*)$/);
+                if (lastNumberMatch && lastNumberMatch[0] === "0" && value !== ".") {
+                    input = input.substring(0, lastNumberMatch.index);
+                }
+                let lastChar = input.slice(-1);
                 if (lastChar === ")" && /[0-9.]/.test(value)) {
                     input += "×";
                 }
-                    input += value;
+                input += value;
                 display_output.innerHTML = CleanInput(input);
             }
         }
@@ -112,26 +108,6 @@ function CleanInput(input) {
         }
     }).join("");
 }
-
-function CleanOutput(output) {
-    let str = output.toString();
-    let [integer, decimal] = str.split(".");
-    let arr = integer.split("");
-
-    if (arr.length > 3) {
-        for (let i = arr.length - 3; i > 0; i -= 3) {
-            arr.splice(i, 0, " ");
-        }
-    }
-
-    if (decimal) {
-        arr.push(".");
-        arr.push(decimal);
-    }
-
-    return arr.join("");
-}
-
 
 function ValidateInput(value) {
     if (changingSign) return true;
@@ -161,7 +137,3 @@ function ValidateInput(value) {
     return true;
 }
 
-
-function PerpareInput(input) {
-    return input.replace(/×/g, "*").replace(/÷/g, "/").replace(/%/g, "/100");
-}
