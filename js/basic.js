@@ -14,6 +14,7 @@ function calculate(inputStr) {
         let prepared = inputStr.replace(/(\d+)!/g, (match, num) => calculateFactorial(parseInt(num)));
         
         prepared = prepared.replace(/√\(([^)]+)\)/g, "Math.sqrt($1)");
+        prepared = prepared.replace(/√(\d+(?:\.\d+)?)/g, "Math.sqrt($1)");
         
         prepared = prepared.replace(/×/g, "*")
                            .replace(/÷/g, "/")

@@ -33,18 +33,18 @@ for (let key of advKeys) {
 
         const value = key.dataset.key;
         const isConverterMode = document.querySelector('.display').classList.contains('mode-conv');
-       if (isConverterMode) {
+        if (isConverterMode) {
             if (typeof activeConverterInput !== 'undefined' && activeConverterInput) {
                 let currentVal = activeConverterInput.value;
                 let lastChar = currentVal.slice(-1);
                 
                 if (value === "√") {
                     if (currentVal === "0") {
-                        activeConverterInput.value = "√(";
+                        activeConverterInput.value = "√";
                     } else if (/[0-9.]/.test(lastChar) || lastChar === ")") {
-                        activeConverterInput.value += "×√(";
+                        activeConverterInput.value += "×√";
                     } else {
-                        activeConverterInput.value += "√(";
+                        activeConverterInput.value += "√";
                     }
                 } 
                 else if (value === "^") {
@@ -66,7 +66,7 @@ for (let key of advKeys) {
         if (justCalculated) {
             display_input.style.display = "none";
             if (value === "√") {
-                input = "√("; 
+                input = "√"; 
             } else {
                 input = lastResult?.toString() || "";
                 input += value;
@@ -80,9 +80,9 @@ for (let key of advKeys) {
 
         if (value === "√") {
             if (/[0-9.]/.test(lastChar) || lastChar === ")") {
-                input += "×√(";
+                input += "×√";
             } else {
-                input += "√(";
+                input += "√";
             }
         } 
         else if (value === "^") {
