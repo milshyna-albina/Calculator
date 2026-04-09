@@ -1,12 +1,19 @@
-.display .converter-screen {
+.converter-screen, .numeral-screen {
     display: none;
 }
-
-.display.mode-conv .calc-lines {
-    display: none;
-}
-
+.display.mode-conv .calc-lines { display: none; }
+.display.mode-conv .numeral-screen { display: none; }
 .display.mode-conv .converter-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+}
+
+.display.mode-numeral .calc-lines { display: none; }
+.display.mode-numeral .converter-screen { display: none; }
+.display.mode-numeral .numeral-screen {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -30,6 +37,7 @@
     width: 65%;
     outline: none;
     text-align: right;
+    margin-right: 10px;
 }
 
 .conv-select {
@@ -39,7 +47,6 @@
     color: #fc5fb8;
     font-size: 14px;
     cursor: pointer;
-    min-width: 60px;
 }
 
 .conv-divider {
@@ -47,4 +54,20 @@
     background-color: #FCAEDA;
     width: 100%;
     opacity: 0.8;
+}
+
+button.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+.hex-active {
+    background-color: #FCE4DE;
+    color: #842323;
+    border: 2px solid #F9C0B4;
+}
+
+.hex-replace {
+    background-color: #F9CEE7;
+    color: #842323;
+    border: 2px solid #FCAEDA;
 }

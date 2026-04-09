@@ -1,6 +1,95 @@
 const settingsBtn = document.querySelector(".toggle");
 const settingsMenu = document.querySelector(".settings-menu");
 const calculator = document.querySelector(".calculator");
+const display = document.querySelector(".display");
+
+window.globalValue = "0";
+
+function switchMode(name) {
+    if (!name) {
+        return;
+    }
+
+    const convInput = document.getElementById("inputFrom");
+    const numInput = document.getElementById("numeralInput");
+    const numFrom = document.getElementById("numeralFrom");
+    const mainInputLine = document.querySelector(".input-line");
+    const mainResultLine = document.querySelector(".result-line");
+
+    if (display.classList.contains("mode-conv") && convInput) {
+        window.globalValue = convInput.value;
+    } else if (display.classList.contains("mode-numeral")) {
+        if (numInput && numFrom) {
+            const rawValue = numInput.value.trim();
+            const base = parseInt(numFrom.value);
+            try {
+                let decimalValue = parseInt(rawValue, base);
+
+                if (!isNaN(decimalValue)) {
+                    window.globalValue = decimalValue.toString();
+                } else {
+                    window.globalValue = "0";
+                }
+            } catch (e) {
+                window.globalValue = "0";
+            }
+        }
+    } else {
+        let valResult = mainResultLine ? mainResultLine.textContent.trim() : "";
+        let valInput = mainInputLine ? mainInputLine.textContent.trim() : "";
+
+        if (valResult !== "" && valResult !== "0") {
+            window.globalValue = valResult;
+        } else if (valInput !== "") {
+            window.globalValue = valInput;
+        }
+    }
+    resetButtonsToDefault();
+
+    display.classList.remove("mode-conv", "mode-numeral");
+    calculator.classList.remove("mode-advanced");
+    settingsMenu.querySelectorAll('li').forEach(li => li.classList.remove("active"));
+
+    const activeItem = settingsMenu.querySelector(`[data-mode="${name}"]`) ||
+        settingsMenu.querySelector(`[data-converter="${name}"]`);
+    if (activeItem) {
+        activeItem.classList.add("active");
+    }
+    if (mainInputLine) {
+        mainInputLine.textContent = "";
+        mainInputLine.style.display = "none";
+    }
+
+    if (typeof converters !== 'undefined' && converters[name]) {
+        currentConverter = name;
+        display.classList.add("mode-conv");
+        updateUnits(name);
+        if (convInput) convInput.value = window.globalValue;
+        activeConverterInput = convInput;
+        convert();
+    } else if (name === "numeral") {
+        display.classList.add("mode-numeral");
+        if (numInput) {
+            let cleanValue = window.globalValue.replace(/[^0-9a-fA-F.]/g, '');
+            numInput.value = cleanValue || "0";
+            if (typeof convertNumeral === "function") {
+                convertNumeral();
+            }
+        }
+        activeConverterInput = numInput;
+        updateHexButtons();
+        updateNumeralButtons();
+    } else {
+        if (name === "advanced") {
+            calculator.classList.add("mode-advanced");
+            updateHexButtons();
+        }
+        if (mainResultLine) mainResultLine.textContent = window.globalValue;
+        activeConverterInput = null;
+    }
+
+    settingsMenu.classList.remove("open");
+}
 
 settingsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -12,22 +101,9 @@ settingsMenu.addEventListener("click", (e) => {
     if (!item) {
         return;
     }
-    const mode = item.dataset.mode;
-    if (mode) {
-        if (item.classList.contains("active")) {
-            settingsMenu.classList.remove("open");
-            return;
-        }
-        settingsMenu.querySelectorAll('li[data-mode]').forEach(li => {
-            li.classList.remove("active");
-        });
-        item.classList.add("active");
-        if (mode === "advanced") {
-            calculator.classList.add("mode-advanced");
-        } else {
-            calculator.classList.remove("mode-advanced");
-        }
-        settingsMenu.classList.remove("open");
+    const target = item.dataset.mode || item.dataset.converter;
+    if (target) {
+        switchMode(target);
     }
 });
 
@@ -36,136 +112,5 @@ document.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const display = document.querySelector(".display");
-    const menu = document.querySelector(".settings-menu");
-    const input = document.getElementById("inputFrom");
-    input.readOnly = true;
-    const result = document.getElementById("resultTo");
-    const from = document.getElementById("unitFrom");
-    const to = document.getElementById("unitTo");
-    const converterItems = document.querySelectorAll("[data-converter]");
-    const buttons = document.querySelectorAll("[data-key]");
-    const converterInputs = document.querySelectorAll('.conv-input, .card-input');
-
-    let currentConverter = "length";
-    const converters = {
-        length: {
-            mm: 0.001,
-            cm: 0.01,
-            m: 1,
-            km: 1000
-        },
-        weight: {
-            g: 0.001,
-            kg: 1,
-            t: 1000
-        },
-        area: {
-            mm2: 0.000001,
-            cm2: 0.0001,
-            m2: 1,
-            km2: 1000000
-        }
-    };
-
-    function updateUnits(type) {
-        from.innerHTML = "";
-        to.innerHTML = "";
-        const units = converters[type];
-        for (let unit in units) {
-            const option1 = document.createElement("option");
-            option1.value = unit;
-            option1.textContent = unit;
-            from.appendChild(option1);
-            const option2 = document.createElement("option");
-            option2.value = unit;
-            option2.textContent = unit;
-            to.appendChild(option2);
-        }
-
-    }
-
-    function convert() {
-        let expression = input.value;
-        let value = 0;
-
-        if (expression) {
-            let openBrackets = (expression.match(/\(/g) || []).length;
-            let closeBrackets = (expression.match(/\)/g) || []).length;
-            for (let i = 0; i < openBrackets - closeBrackets; i++) {
-                expression += ")";
-            }
-
-            try {
-                if (typeof calculateFactorial === "function") {
-                    expression = expression.replace(/(\d+)!/g, (match, num) => calculateFactorial(parseInt(num)));
-                }
-                expression = expression.replace(/√\(([^)]+)\)/g, "Math.sqrt($1)");
-                expression = expression.replace(/\^/g, "**");
-                expression = expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/%/g, '/100');
-                expression = expression.replace(/[+\-*/.]$/, '');
-                
-                value = new Function('return ' + expression)();
-            } catch (error) {
-                value = NaN; 
-            }
-        }
-
-        if (isNaN(value) || value === undefined) {
-            result.textContent = "0";
-            return;
-        }
-
-        const units = converters[currentConverter];
-        const fromValue = units[from.value];
-        const toValue = units[to.value];
-        
-        const baseValue = value * fromValue; 
-        const converted = baseValue / toValue;
-        
-        if (converted === 0 && value !== 0) {
-        result.textContent = converted.toPrecision(6);
-    } else {
-        result.textContent = parseFloat(converted.toFixed(6)).toString();
-    }
-    }
-
-    input.addEventListener("input", convert);
-    from.addEventListener("change", convert);
-    to.addEventListener("change", convert);
-
-    converterInputs.forEach(inputField => {
-        inputField.type = 'text';
-        inputField.readOnly = true; 
-
-        inputField.addEventListener('click', () => {
-            activeConverterInput = inputField;
-        });
-    });
-
-    converterItems.forEach(item => {
-        item.addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (item.classList.contains("active")) {
-                converterItems.forEach(el => el.classList.remove("active"));
-                display.classList.remove("mode-conv");
-                menu.classList.remove("open");
-                activeConverterInput = null;
-                return;
-            }
-            converterItems.forEach(el => el.classList.remove("active"));
-            item.classList.add("active");
-            const type = item.dataset.converter;
-            currentConverter = type;
-            updateUnits(type);
-            display.classList.add("mode-conv");
-            menu.classList.remove("open");
-            activeConverterInput = input;
-            if (activeConverterInput.value === "") {
-                activeConverterInput.value = "0";
-            }
-            convert();
-        });
-    });
-
+    switchMode("basic");
 });
