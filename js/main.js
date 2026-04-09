@@ -12,12 +12,25 @@ for (let key of keys) {
     const value = key.dataset.key;
 
     key.addEventListener('click', () => {
-        if (activeConverterInput) {
+        const isConverterMode = document.querySelector('.display').classList.contains('mode-conv');
+        
+        if (isConverterMode && activeConverterInput) {
+            
             if (value === "C") {
-                activeConverterInput.value = "";
-            } else if (/[0-9.]/.test(value)) {
-                if (value === "." && activeConverterInput.value.includes(".")) return;
-                activeConverterInput.value += value;
+                activeConverterInput.value = "0";
+            } else if (/[0-9.+\-×÷%]/.test(value)) { 
+                
+                if (value === ".") {
+                    const parts = activeConverterInput.value.split(/[+\-×÷%]/);
+                    const lastPart = parts[parts.length - 1];
+                    if (lastPart.includes(".")) return;
+                }
+                if (activeConverterInput.value === "0" && /[0-9(]/.test(value)) {
+                    activeConverterInput.value = value;
+                }
+                else {
+                    activeConverterInput.value += value;
+                }
             }
             activeConverterInput.dispatchEvent(new Event('input'));
             return; 

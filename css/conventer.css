@@ -29,16 +29,15 @@
     color: #842323;
     width: 65%;
     outline: none;
-    text-align: left;
+    text-align: right;
 }
 
 .conv-select {
-    background: #FDE4F2;
+    background: white;
     border: 1px solid #FCAEDA;
     border-radius: 6px;
-    color: #842323;
+    color: #fc5fb8;
     font-size: 14px;
-    padding: 2px 5px;
     cursor: pointer;
     min-width: 60px;
 }

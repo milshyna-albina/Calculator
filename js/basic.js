@@ -4,8 +4,22 @@ function clear() {
 
 function calculate(inputStr) {
     if (inputStr === "") return null;
+    let openBrackets = (inputStr.match(/\(/g) || []).length;
+    let closeBrackets = (inputStr.match(/\)/g) || []).length;
+    for (let i = 0; i < openBrackets - closeBrackets; i++) {
+        inputStr += ")";
+    }
+
     try {
-        const prepared = inputStr.replace(/×/g, "*").replace(/÷/g, "/").replace(/%/g, "/100");
+        let prepared = inputStr.replace(/(\d+)!/g, (match, num) => calculateFactorial(parseInt(num)));
+        
+        prepared = prepared.replace(/√\(([^)]+)\)/g, "Math.sqrt($1)");
+        
+        prepared = prepared.replace(/×/g, "*")
+                           .replace(/÷/g, "/")
+                           .replace(/%/g, "/100")
+                           .replace(/\^/g, "**");
+
         return Function(`return ${prepared}`)();
     } catch (e) {
         return "Error";

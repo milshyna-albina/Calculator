@@ -39,10 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const display = document.querySelector(".display");
     const menu = document.querySelector(".settings-menu");
     const input = document.getElementById("inputFrom");
+    input.readOnly = true;
     const result = document.getElementById("resultTo");
     const from = document.getElementById("unitFrom");
     const to = document.getElementById("unitTo");
     const converterItems = document.querySelectorAll("[data-converter]");
+    const buttons = document.querySelectorAll("[data-key]");
+    const converterInputs = document.querySelectorAll('.conv-input, .card-input');
+
     let currentConverter = "length";
     const converters = {
         length: {
@@ -77,28 +81,67 @@ document.addEventListener("DOMContentLoaded", () => {
             option2.value = unit;
             option2.textContent = unit;
             to.appendChild(option2);
-
         }
 
     }
 
     function convert() {
-        const value = parseFloat(input.value);
-        if (isNaN(value)) {
+        let expression = input.value;
+        let value = 0;
+
+        if (expression) {
+            let openBrackets = (expression.match(/\(/g) || []).length;
+            let closeBrackets = (expression.match(/\)/g) || []).length;
+            for (let i = 0; i < openBrackets - closeBrackets; i++) {
+                expression += ")";
+            }
+
+            try {
+                if (typeof calculateFactorial === "function") {
+                    expression = expression.replace(/(\d+)!/g, (match, num) => calculateFactorial(parseInt(num)));
+                }
+                expression = expression.replace(/√\(([^)]+)\)/g, "Math.sqrt($1)");
+                expression = expression.replace(/\^/g, "**");
+                expression = expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/%/g, '/100');
+                expression = expression.replace(/[+\-*/.]$/, '');
+                
+                value = new Function('return ' + expression)();
+            } catch (error) {
+                value = NaN; 
+            }
+        }
+
+        if (isNaN(value) || value === undefined) {
             result.textContent = "0";
             return;
         }
+
         const units = converters[currentConverter];
         const fromValue = units[from.value];
         const toValue = units[to.value];
-        const meters = value * fromValue;
-        const converted = meters / toValue;
-        result.textContent = converted.toFixed(4);
+        
+        const baseValue = value * fromValue; 
+        const converted = baseValue / toValue;
+        
+        if (converted === 0 && value !== 0) {
+        result.textContent = converted.toPrecision(6);
+    } else {
+        result.textContent = parseFloat(converted.toFixed(6)).toString();
+    }
     }
 
     input.addEventListener("input", convert);
     from.addEventListener("change", convert);
     to.addEventListener("change", convert);
+
+    converterInputs.forEach(inputField => {
+        inputField.type = 'text';
+        inputField.readOnly = true; 
+
+        inputField.addEventListener('click', () => {
+            activeConverterInput = inputField;
+        });
+    });
 
     converterItems.forEach(item => {
         item.addEventListener("click", (e) => {
@@ -107,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 converterItems.forEach(el => el.classList.remove("active"));
                 display.classList.remove("mode-conv");
                 menu.classList.remove("open");
+                activeConverterInput = null;
                 return;
             }
             converterItems.forEach(el => el.classList.remove("active"));
@@ -116,6 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
             updateUnits(type);
             display.classList.add("mode-conv");
             menu.classList.remove("open");
+            activeConverterInput = input;
+            if (activeConverterInput.value === "") {
+                activeConverterInput.value = "0";
+            }
             convert();
         });
     });
