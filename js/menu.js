@@ -12,13 +12,28 @@ function switchMode(name) {
 
     const convInput = document.getElementById("inputFrom");
     const numInput = document.getElementById("numeralInput");
+    const numFrom = document.getElementById("numeralFrom");
     const mainInputLine = document.querySelector(".input-line");
     const mainResultLine = document.querySelector(".result-line");
 
     if (display.classList.contains("mode-conv") && convInput) {
         window.globalValue = convInput.value;
-    } else if (display.classList.contains("mode-numeral") && numInput) {
-        window.globalValue = numInput.value;
+    } else if (display.classList.contains("mode-numeral")) {
+        if (numInput && numFrom) {
+            const rawValue = numInput.value.trim();
+            const base = parseInt(numFrom.value);
+            try {
+                let decimalValue = parseInt(rawValue, base);
+
+                if (!isNaN(decimalValue)) {
+                    window.globalValue = decimalValue.toString();
+                } else {
+                    window.globalValue = "0";
+                }
+            } catch (e) {
+                window.globalValue = "0";
+            }
+        }
     } else {
         let valResult = mainResultLine ? mainResultLine.textContent.trim() : "";
         let valInput = mainInputLine ? mainInputLine.textContent.trim() : "";
@@ -27,10 +42,9 @@ function switchMode(name) {
             window.globalValue = valResult;
         } else if (valInput !== "") {
             window.globalValue = valInput;
-        } else {
-            window.globalValue = "0";
         }
     }
+    resetButtonsToDefault();
 
     display.classList.remove("mode-conv", "mode-numeral");
     calculator.classList.remove("mode-advanced");
@@ -40,6 +54,10 @@ function switchMode(name) {
         settingsMenu.querySelector(`[data-converter="${name}"]`);
     if (activeItem) {
         activeItem.classList.add("active");
+    }
+    if (mainInputLine) {
+        mainInputLine.textContent = "";
+        mainInputLine.style.display = "none";
     }
 
     if (typeof converters !== 'undefined' && converters[name]) {
@@ -59,9 +77,12 @@ function switchMode(name) {
             }
         }
         activeConverterInput = numInput;
+        updateHexButtons();
+        updateNumeralButtons();
     } else {
         if (name === "advanced") {
             calculator.classList.add("mode-advanced");
+            updateHexButtons();
         }
         if (mainResultLine) mainResultLine.textContent = window.globalValue;
         activeConverterInput = null;
@@ -77,9 +98,13 @@ settingsBtn.addEventListener("click", (e) => {
 
 settingsMenu.addEventListener("click", (e) => {
     const item = e.target.closest("li");
-    if (!item) return;
+    if (!item) {
+        return;
+    }
     const target = item.dataset.mode || item.dataset.converter;
-    if (target) switchMode(target);
+    if (target) {
+        switchMode(target);
+    }
 });
 
 document.addEventListener("click", () => {

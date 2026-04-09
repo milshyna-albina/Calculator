@@ -9,46 +9,74 @@ let changingSign = false;
 let replaceNextNumber = false;
 
 for (let key of keys) {
-    const value = key.dataset.key;
-
     key.addEventListener('click', () => {
-        const isConverterMode = document.querySelector('.display').classList.contains('mode-conv');
-        
-        if (isConverterMode && activeConverterInput) {
-            
-            if (value === "C") {
+        const display = document.querySelector('.display');
+        const isConverterMode = display.classList.contains('mode-conv');
+        const isNumeralMode = display.classList.contains('mode-numeral');
+        const value = key.dataset.key;
+
+        if ((isConverterMode || isNumeralMode) && activeConverterInput) {
+            const numeralFromElem = document.getElementById("numeralFrom");
+            const fromBase = numeralFromElem ? parseInt(numeralFromElem.value) : 10;
+            const mathValue = value.replace("×", "*").replace("÷", "/");
+
+            if (value === "AC" || (value === "C" && (!isNumeralMode || fromBase !== 16))) {
                 activeConverterInput.value = "0";
-            } else if (/[0-9.+\-×÷%]/.test(value)) { 
-                
-                if (value === ".") {
-                    const parts = activeConverterInput.value.split(/[+\-×÷%]/);
-                    const lastPart = parts[parts.length - 1];
-                    if (lastPart.includes(".")) return;
+            } else if (isNumeralMode && value === "=") {
+                if (typeof calculateNumeralExpression === "function") calculateNumeralExpression();
+            } else if (value === "+/-") {
+                if (activeConverterInput.value !== "0") {
+                    activeConverterInput.value = activeConverterInput.value.startsWith("-")
+                        ? activeConverterInput.value.substring(1)
+                        : "-" + activeConverterInput.value;
                 }
-                if (activeConverterInput.value === "0" && /[0-9(]/.test(value)) {
-                    activeConverterInput.value = value;
-                }
-                else {
-                    activeConverterInput.value += value;
+            } else {
+                if (isNumeralMode) {
+                    if (/[0-9A-Fa-f+\-*/%()!^√.]/.test(mathValue)) {
+                        if (fromBase === 2) {
+                            if (activeConverterInput.value === "0" && mathValue !== "0") {
+                                activeConverterInput.value = mathValue.toUpperCase();
+                            } else {
+                                activeConverterInput.value += mathValue.toUpperCase();
+                            }
+                        }
+                        else if (fromBase === 16 && mathValue.toUpperCase() === "C") {
+                            activeConverterInput.value = (activeConverterInput.value === "0") ? "C" : activeConverterInput.value + "C";
+                        }
+                        else {
+                            if (activeConverterInput.value === "0" && !/[+\-*/()]/.test(mathValue)) {
+                                activeConverterInput.value = mathValue.toUpperCase();
+                            } else {
+                                activeConverterInput.value += mathValue.toUpperCase();
+                            }
+                        }
+                    }
+                } else if (isConverterMode) {
+                    if (/[0-9.+\-*/%]/.test(mathValue)) {
+                        if (mathValue === "." ) {
+                            const parts = activeConverterInput.value.split(/[+\-*/%]/);
+                            if (parts[parts.length - 1].includes(".")) {
+                                return;
+                            }
+                        }
+                        activeConverterInput.value = (activeConverterInput.value === "0" && /[0-9(]/.test(mathValue)) ? mathValue : activeConverterInput.value + mathValue;
+                    }
                 }
             }
             activeConverterInput.dispatchEvent(new Event('input'));
-            return; 
+            return;
         }
-
         if (justCalculated && /[0-9.]/.test(value)) {
             input = "";
             display_input.style.display = "none";
             justCalculated = false;
         }
-
         if (value === "C") {
             const state = clear();
             input = state.input;
             display_output.innerHTML = state.out;
             display_input.innerHTML = "";
-        }
-        else if (value === "=") {
+        } else if (value === "=") {
             const res = calculate(input);
             if (res === "Error" || !isFinite(res)) {
                 display_output.innerHTML = res === "Error" ? "Error" : "Undefined";
@@ -61,8 +89,7 @@ for (let key of keys) {
                 input = "";
             }
             justCalculated = true;
-        }
-        else if (value === "+/-") {
+        } else if (value === "+/-") {
             input = toggleSign(input, lastResult, justCalculated);
             justCalculated = false;
             display_output.innerHTML = CleanInput(input);

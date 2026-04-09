@@ -39,7 +39,7 @@
           </ul>
         </li>
 
-        <li data-mode="numeral">Numeric system</li>
+        <li data-mode="numeral">Numeral system<span class="checkmark">✔</span></li>
 
       </ul>
     </div>
@@ -72,6 +72,26 @@
             <option value="cm">cm</option>
             <option value="m" selected>m</option>
             <option value="km">km</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="numeral-screen">
+        <div class="conv-row from">
+          <input type="text" class="conv-input" id="numeralInput" readonly>
+          <select class="conv-select" id="numeralFrom">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="16">Hexadecimal</option>
+          </select>
+        </div>
+        <div class="conv-divider"></div>
+        <div class="conv-row to">
+          <div class="conv-result" id="numeralResult">0</div>
+          <select class="conv-select" id="numeralTo">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="16">Hexadecimal</option>
           </select>
         </div>
       </div>
@@ -143,10 +163,11 @@
     </div>
   </div>
 
-  <script src="js/menu.js"></script>
-  <script src="js/converter.js"></script>
   <script src="js/basic.js"></script>
   <script src="js/advanced.js"></script>
+  <script src="js/numeral_system.js"></script>
+  <script src="js/converter.js"></script>
+  <script src="js/menu.js"></script>
   <script src="js/main.js"></script>
 </body>
 

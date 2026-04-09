@@ -1,4 +1,32 @@
 function clear() {
+    window.globalValue = "0";
+
+    const mainInputLine = document.querySelector(".input-line");
+    const mainResultLine = document.querySelector(".result-line");
+    if (mainInputLine)  {
+        mainInputLine.textContent = "";
+    }
+    if (mainResultLine) {
+        mainResultLine.textContent = "0";
+    }
+
+    const numInput = document.getElementById("numeralInput");
+    const numResult = document.getElementById("numeralResult");
+    if (numInput) {
+        numInput.value = "0";
+    }
+    if (numResult) {
+        numResult.textContent = "0";
+    }
+
+    const convInput = document.getElementById("inputFrom");
+    if (convInput) {
+        convInput.value = "0";
+    }
+    if (typeof convert === "function") {
+        convert();
+    }
+
     return { input: "", out: "0" };
 }
 

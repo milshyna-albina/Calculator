@@ -24,6 +24,7 @@ h1 {
   border-radius: 25px;
   padding: 20px;
   width: 320px;
+  height: 470px;
   position: relative;
 }
 
@@ -255,6 +256,8 @@ button {
   display: none;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
+  grid-auto-rows: 1fr;
+  height: 340px;
 }
 
 .calculator.mode-advanced .grid-basic {
@@ -287,5 +290,9 @@ button {
 
 .calculator.mode-advanced .btn-advanced {
   display: flex;
+}
+
+.hide-memory .mem-row {
+  display: none;
 }
 
