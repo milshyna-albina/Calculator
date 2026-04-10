@@ -22,8 +22,37 @@ for (let key of keys) {
 
             if (value === "AC" || (value === "C" && (!isNumeralMode || fromBase !== 16))) {
                 activeConverterInput.value = "0";
-            } else if (isNumeralMode && value === "=") {
-                if (typeof calculateNumeralExpression === "function") calculateNumeralExpression();
+            } else if (value === "=") {
+                if (isNumeralMode) {
+                    if (typeof calculateNumeralExpression === "function") {
+                        const inputField = document.getElementById("numeralInput");
+                        const exprBefore = inputField ? inputField.value : "";
+                        const fromBase = document.getElementById("numeralFrom")?.value || "10";
+                        const toBase = document.getElementById("numeralTo")?.value || "2";
+                        calculateNumeralExpression();
+                        setTimeout(() => {
+                            const resultField = document.getElementById("numeralResult");
+                            const finalResult = resultField ? resultField.textContent : "";
+                            if (exprBefore && finalResult) {
+                                save(`${exprBefore} (B${fromBase})`, `${finalResult} (B${toBase})`);
+                            }
+                        }, 50);
+                    }
+                } else if (isConverterMode) {
+                    const inputField = document.getElementById("inputFrom");
+                    const resultField = document.getElementById("resultTo");
+                    const fromUnit = document.getElementById("unitFrom");
+                    const toUnit = document.getElementById("unitTo");
+                    if (inputField && resultField && fromUnit && toUnit) {
+                        const valBefore = inputField.value;
+                        const valAfter = resultField.textContent || resultField.value;
+                        const unit1 = fromUnit.value;
+                        const unit2 = toUnit.value;
+                        if (valBefore && valAfter) {
+                            save(`${valBefore} ${unit1}`, `${valAfter} ${unit2}`);
+                        }
+                    }
+                }
             } else if (value === "+/-") {
                 if (activeConverterInput.value !== "0") {
                     activeConverterInput.value = activeConverterInput.value.startsWith("-")
@@ -82,6 +111,7 @@ for (let key of keys) {
                 display_output.innerHTML = res === "Error" ? "Error" : "Undefined";
                 input = "";
             } else {
+                save(input, res);
                 display_output.innerHTML = format(res);
                 display_input.innerHTML = CleanInput(input);
                 display_input.style.display = "block";
@@ -137,6 +167,9 @@ for (let key of keys) {
                 if (lastChar === ")" && /[0-9.]/.test(value)) {
                     input += "×";
                 }
+                if (value === "(" && (/[0-9.]/.test(lastChar) || lastChar === ")")) {
+                    input += "×";
+                }
                 input += value;
                 display_output.innerHTML = CleanInput(input);
             }
@@ -188,3 +221,64 @@ function ValidateInput(value) {
     return true;
 }
 
+document.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const rawText = (e.clipboardData || window.clipboardData).getData('text');
+    const display = document.querySelector('.display');
+    const calculator = document.querySelector('.calculator');
+    const isNumeral = display.classList.contains('mode-numeral');
+    const isConverter = display.classList.contains('mode-conv');
+    const isAdvanced = calculator.classList.contains('mode-advanced');
+    let allowedChars = "";
+    let targetField = "display";
+
+    if (isNumeral) {
+        targetField = "input";
+        const base = parseInt(document.getElementById("numeralFrom").value);
+        if (base === 2) {
+            allowedChars = "01";
+        } else if (base === 16) {
+            allowedChars = "0-9A-Fa-f";
+        } else {
+            allowedChars = "0-9";
+        }
+        allowedChars += "\\+\\-\\*/%\\.";
+    } else if (isConverter) {
+        targetField = "input";
+        allowedChars = "0-9\\.\\+\\-\\*/%";
+    } else if (isAdvanced) {
+        allowedChars = "0-9\\.\\+\\-\\*/%\\(\\)\\!\\^√";
+    } else {
+        allowedChars = "0-9\\.\\+\\-\\*/%";
+    }
+
+    const regex = new RegExp(`[^${allowedChars}]`, 'g');
+    let cleanText = rawText.replace(regex, '');
+    if (!cleanText) {
+        return;
+    }
+    if (targetField === "input") {
+        const inputElement = isNumeral ? document.getElementById('numeralInput') : document.getElementById('inputFrom');
+        if (inputElement) {
+            if (inputElement.value === "0") {
+                inputElement.value = cleanText.toUpperCase();
+            } else {
+                inputElement.value += cleanText.toUpperCase();
+            }
+            inputElement.dispatchEvent(new Event('input'));
+            if (isNumeral && typeof calculateNumeralExpression === "function") calculateNumeralExpression();
+        }
+    } else {
+        if (typeof input !== 'undefined') {
+            if (input === "0") {
+                input = cleanText;
+            } else {
+                input += cleanText;
+            }
+            const resultLine = document.querySelector('.result-line');
+            if (resultLine) {
+                resultLine.innerHTML = (typeof CleanInput === 'function') ? CleanInput(input) : input;
+            }
+        }
+    }
+});

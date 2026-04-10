@@ -55,6 +55,18 @@ function updateHexButtons() {
     const normalSymbols = ["!", "^", "%", "(", ")", "+/-"];
     const hexLetters = ["E", "F", "C", "A", "B", "D"];
 
+    if (base === 16 && isNumeralMode) {
+        calculator.classList.remove("mode-basic");
+        calculator.classList.add("mode-advanced");
+        calculator.classList.add("hide-memory");
+    } else {
+        calculator.classList.remove("hide-memory");
+        if (isNumeralMode) {
+            calculator.classList.remove("mode-advanced");
+            calculator.classList.add("mode-basic");
+        }
+    }
+
     buttons.forEach(btn => {
         if (!btn.dataset.original) {
             btn.dataset.original = btn.dataset.key;
@@ -62,8 +74,6 @@ function updateHexButtons() {
         const originalKey = btn.dataset.original;
 
         if (base === 16 && isNumeralMode) {
-            calculator.classList.add("mode-advanced");
-            calculator.classList.add("hide-memory");
             const index = normalSymbols.indexOf(originalKey);
             if (index !== -1) {
                 btn.textContent = hexLetters[index];
@@ -73,22 +83,24 @@ function updateHexButtons() {
             if (originalKey === ".") {
                 btn.textContent = "+/-";
                 btn.dataset.key = "+/-";
-                btn.classList.add("hex-replace");
             }
             if (originalKey === "√") {
                 btn.textContent = "%";
                 btn.dataset.key = "%";
-                btn.classList.add("hex-replace");
             }
         } else {
-            calculator.classList.remove("hide-memory");
-            if (isNumeralMode) {
-                calculator.classList.remove("mode-advanced");
-            }
-            btn.textContent = originalKey;
             btn.dataset.key = originalKey;
             btn.classList.remove("hex-active");
-            btn.classList.remove("hex-replace");
+            if (originalKey === "!") {
+                btn.textContent = "x!";
+            }
+            else if (originalKey === "^") {
+                btn.textContent = "xⁿ";
+            }
+            else if (originalKey === "√") {
+                btn.textContent = "√x";
+            }
+            else btn.textContent = originalKey;
         }
     });
 
@@ -148,7 +160,7 @@ function updateNumeralButtons() {
         btn.disabled = true;
         btn.classList.add("disabled");
 
-        if (key === "C" || key === "AC" || ["+", "-", "×", "÷", "%", "+/-"].includes(key)) {
+        if (key === "C" || key === "AC" || ["+", "-", "×", "÷", "%", "+/-", "="].includes(key)) {
             btn.disabled = false;
             btn.classList.remove("disabled");
             return;
@@ -192,7 +204,9 @@ function calculateNumeralExpression() {
         if (isNaN(resultDec) || !isFinite(resultDec)) {
             numInput.value = "Error";
         } else {
-            numInput.value = Math.floor(resultDec).toString(base).toUpperCase();
+            if (base !== 2 && !/[+\-*/%()^√]/.test(expression)) {
+                numInput.value = Math.floor(resultDec).toString(base).toUpperCase();
+            }
         }
     } catch (e) {
         console.error(e);
