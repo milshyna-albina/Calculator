@@ -1,0 +1,131 @@
+.history-toggle {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #FCE4DE;
+    color: #842323;
+    border: 2px solid #F9C0B4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.history-toggle img {
+    width: 18px;
+    height: 18px;
+}
+
+.history-panel {
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    width: 292px;
+    background-color: #fff;
+    border: 2px solid #F9C0B4;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-height: 430px;
+    overflow-y: auto;
+}
+
+.history-panel.hidden {
+    display: none;
+}
+
+.history-header {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #FCE4DE;
+    color: #842323;
+    padding: 0 5px;
+}
+
+.history-title {
+    font-weight: bold;
+    flex-grow: 1;
+    text-align: center;
+    margin-left: 40px;
+}
+
+#clear-history {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #842323;
+    width: 40px;
+    text-align: right;
+    padding: 0;
+}
+
+#clear-history img {
+    width: auto;
+    height: 25px;
+    margin-bottom: 7px;
+}
+
+.history-item {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #fdf0ee;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    background-color: #fff4f2;
+}
+
+.history-content {
+    text-align: center;
+}
+
+.copy-history-btn {
+    position: absolute;
+    right: 6px;
+    opacity: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.history-item:hover .copy-history-btn {
+    opacity: 1;
+}
+
+.copy-history-btn img {
+    width: 16px;
+    height: 16px;
+}
+
+.history-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.history-item .exp, .history-item .res {
+    font-size: 14px;
+    color: #fc5fb8;
+}
+
+.history-empty-msg {
+    color: #842323;
+    font-size: 13px;
+    margin-bottom: 7px;
+}

@@ -1,13 +1,16 @@
 .settings-menu {
     position: absolute;
     top: 40px;
-    right: -2px;
+    right: 20px;
     background-color: #fff;
-    border: 2px solid #FCAEDA;
-    width: 180px;
+    border: 2px solid #F9C0B4;
+    border-radius: 12px;
+    width: 154px;
     display: none;
     flex-direction: column;
     z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 8px 0;
 }
 
 .settings-menu.open {
@@ -28,15 +31,16 @@
     justify-content: space-between;
     align-items: center;
     position: relative;
+    color: #842323;
 }
 
 .settings-menu li:hover {
-    background-color: #FDE4F2;
+    background-color: #fff4f2;
 }
 
 .checkmark {
     display: none;
-    color: #f06292;
+    color: #F9C0B4;
     font-weight: bold;
 }
 
@@ -50,12 +54,15 @@
 
 .submenu {
     position: absolute;
-    left: -182px;
+    left: -164px;
     top: 0;
+    border: 2px solid #F9C0B4;
+    border-radius: 12px 0 12px 12px;
     background-color: #fff;
-    border: 2px solid #FCAEDA;
-    width: 178px;
+    width: 160px;
     display: none;
+    overflow: hidden;
+    text-align: left;
 }
 
 .has-submenu:hover .submenu {

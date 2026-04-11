@@ -29,6 +29,10 @@ const advKeys = document.querySelectorAll('[data-key="!"], [data-key="^"], [data
 
 for (let key of advKeys) {
     key.addEventListener('click', (event) => {
+        const isNumeralMode = display.classList.contains('mode-numeral');
+        if (isNumeralMode) {
+            return;
+        }
         event.stopImmediatePropagation();
 
         const value = key.dataset.key;

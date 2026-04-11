@@ -84,7 +84,18 @@ function switchMode(name) {
             calculator.classList.add("mode-advanced");
             updateHexButtons();
         }
-        if (mainResultLine) mainResultLine.textContent = window.globalValue;
+        if (mainResultLine) {
+            mainResultLine.textContent = window.globalValue;
+        }
+        if (typeof input !== 'undefined') {
+            input = window.globalValue;
+        }
+        if (typeof lastResult !== 'undefined') {
+            lastResult = parseFloat(window.globalValue);
+        }
+        if (typeof justCalculated !== 'undefined') {
+            justCalculated = false;
+        }
         activeConverterInput = null;
     }
 
@@ -94,6 +105,9 @@ function switchMode(name) {
 settingsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     settingsMenu.classList.toggle("open");
+    if (historyPanel) {
+        historyPanel.classList.add('hidden');
+    }
 });
 
 settingsMenu.addEventListener("click", (e) => {
