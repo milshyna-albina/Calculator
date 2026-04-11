@@ -103,12 +103,10 @@ function convert() {
 }
 
 function swapUnits() {
-    const input = document.getElementById("inputFrom");
-    const result = document.getElementById("resultTo");
     const from = document.getElementById("unitFrom");
     const to = document.getElementById("unitTo");
 
-    if (!input || !result || !from || !to) {
+    if (!from || !to) {
         return;
     }
 
@@ -116,12 +114,13 @@ function swapUnits() {
     from.value = to.value;
     to.value = tempUnit;
 
-    if (!(result.textContent === "0" && input.value === "")) {
-        input.value = result.textContent; 
+    if (typeof noDuplicateUnits === "function") {
+        noDuplicateUnits();
     }
 
-    noDuplicateUnits();
-    convert();
+    if (typeof convert === "function") {
+        convert();
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

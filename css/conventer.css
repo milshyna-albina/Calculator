@@ -34,10 +34,13 @@
     font-family: inherit;
     font-size: 24px;
     color: #842323;
-    width: 75%;
     outline: none;
+    flex: 1;       
+    min-width: 0;
     text-align: right;
     margin-right: 10px;
+    overflow-x: auto;     
+    white-space: nowrap;
 }
 
 .conv-select {
@@ -47,6 +50,7 @@
     color: #fc5fb8;
     font-size: 14px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .conv-divider {

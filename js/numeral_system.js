@@ -40,6 +40,35 @@ function convertNumeral() {
     }
 }
 
+function noDuplicateNumerals() {
+    const from = document.getElementById("numeralFrom");
+    const to = document.getElementById("numeralTo");
+
+    if (!from || !to) return;
+
+    if (from.value === to.value) {
+        const available = Array.from(to.options).find(opt => opt.value !== from.value);
+        if (available) to.value = available.value;
+    }
+
+    Array.from(from.options).forEach(opt => { opt.disabled = false; opt.hidden = false; });
+    Array.from(to.options).forEach(opt => { opt.disabled = false; opt.hidden = false; });
+
+    const selectedTo = to.value;
+    const optionInFrom = Array.from(from.options).find(opt => opt.value === selectedTo);
+    if (optionInFrom) {
+        optionInFrom.disabled = true;
+        optionInFrom.hidden = true;
+    }
+
+    const selectedFrom = from.value;
+    const optionInTo = Array.from(to.options).find(opt => opt.value === selectedFrom);
+    if (optionInTo) {
+        optionInTo.disabled = true;
+        optionInTo.hidden = true;
+    }
+}
+
 function updateHexButtons() {
     const fromSelect = document.getElementById("numeralFrom");
     const display = document.querySelector(".display");
@@ -212,14 +241,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (numeralFrom) {
         numeralFrom.addEventListener("change", () => {
+            noDuplicateNumerals();
             updateHexButtons();
             updateNumeralButtons();
             convertNumeral();
         });
     }
     if (numeralTo) {
-        numeralTo.addEventListener("change", convertNumeral);
+        numeralTo.addEventListener("change", () => {
+            noDuplicateNumerals(); 
+            convertNumeral();
+        });
     }
+    noDuplicateNumerals();
     updateHexButtons();
     updateNumeralButtons();
 });

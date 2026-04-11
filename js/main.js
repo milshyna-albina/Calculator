@@ -31,6 +31,28 @@ for (let key of keys) {
                         : "-" + activeConverterInput.value;
                 }
             } else {
+                const displayOps = ["+", "-", "×", "÷", "%"];
+                let currentVal = activeConverterInput.value;
+                let lastChar = currentVal.slice(-1);
+                let secondLastChar = currentVal.slice(-2, -1);
+
+                if (displayOps.includes(value)) {
+                    if (displayOps.includes(lastChar)) {
+                        if (lastChar === "-" && displayOps.includes(secondLastChar)) {
+                            if (value !== "-") {
+                                activeConverterInput.value = currentVal.slice(0, -2) + value;
+                                activeConverterInput.dispatchEvent(new Event('input'));
+                            }
+                            return; 
+                        } else if (value === "-" && lastChar !== "-") {
+                        } else {
+                            activeConverterInput.value = currentVal.slice(0, -1) + value;
+                            activeConverterInput.dispatchEvent(new Event('input'));
+                            return; 
+                        }
+                    }
+                }
+
                 if (isNumeralMode) {
                     if (/[0-9A-Fa-f+\-*/%()!^√.]/.test(mathValue)) {
                         if (fromBase === 2) {
@@ -54,12 +76,12 @@ for (let key of keys) {
                 } else if (isConverterMode) {
                     if (/[0-9.+\-*/%]/.test(mathValue)) {
                         if (mathValue === "." ) {
-                            const parts = activeConverterInput.value.split(/[+\-*/%]/);
+                            const parts = activeConverterInput.value.split(/[+\-×÷%]/);
                             if (parts[parts.length - 1].includes(".")) {
                                 return;
                             }
                         }
-                        activeConverterInput.value = (activeConverterInput.value === "0" && /[0-9(]/.test(mathValue)) ? mathValue : activeConverterInput.value + mathValue;
+                        activeConverterInput.value = (activeConverterInput.value === "0" && /[0-9(]/.test(mathValue)) ? mathValue : activeConverterInput.value + value;
                     }
                 }
             }
@@ -75,7 +97,9 @@ for (let key of keys) {
             const state = clear();
             input = state.input;
             display_output.innerHTML = state.out;
+            adjustDisplay(display_output);
             display_input.innerHTML = "";
+            adjustDisplay(display_input);
         } else if (value === "=") {
             const res = calculate(input);
             if (res === "Error" || !isFinite(res)) {
@@ -83,7 +107,12 @@ for (let key of keys) {
                 input = "";
             } else {
                 display_output.innerHTML = format(res);
+                
                 display_input.innerHTML = CleanInput(input);
+                display_input.style.fontSize = "20px"; 
+                display_input.style.opacity = "0.8"; 
+                display_input.scrollLeft = display_input.scrollWidth; 
+
                 display_input.style.display = "block";
                 lastResult = res;
                 input = "";
@@ -93,6 +122,7 @@ for (let key of keys) {
             input = toggleSign(input, lastResult, justCalculated);
             justCalculated = false;
             display_output.innerHTML = CleanInput(input);
+            adjustDisplay(display_output);
         } else if (value === "MR") {
             let mem = memoryRecall();
             if (mem === 0) {
@@ -106,6 +136,7 @@ for (let key of keys) {
                 }
             }
             display_output.innerHTML = CleanInput(input);
+            adjustDisplay(display_output);
         } else if (value === "MC") {
             memoryClear();
         } else if (value === "M+") {
@@ -139,16 +170,36 @@ for (let key of keys) {
                 }
                 input += value;
                 display_output.innerHTML = CleanInput(input);
+                adjustDisplay(display_output);
             }
         }
     });
+}
+
+function adjustDisplay(element) {
+    if (!element) return;
+
+    const baseFontSize = 35; 
+    const minFontSize = 25;  
+
+    const textLength = element.textContent.length;
+
+    if (textLength > 10) {
+        let newSize = baseFontSize - (textLength - 10) * 1.5;
+        newSize = Math.max(newSize, minFontSize); 
+        element.style.fontSize = newSize + "px";
+    } else {
+        element.style.fontSize = baseFontSize + "px";
+    }
+
+    element.scrollLeft = element.scrollWidth;
 }
 
 function CleanInput(input) {
     if (!input) {
         return "";
     }
-    return input.split("").map(char => {
+   let mappedStr = input.split("").map(char => {
         switch(char) {
             case "×": return "×";
             case "÷": return "÷";
@@ -158,6 +209,14 @@ function CleanInput(input) {
             default: return char;
         }
     }).join("");
+
+    let cleanStr = mappedStr.replace(/\s/g, "");
+    
+    return cleanStr.replace(/\d+(?:\.\d+)?/g, (number) => {
+        let [integer, decimal] = number.split(".");
+        let formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return decimal !== undefined ? `${formattedInteger}.${decimal}` : formattedInteger;
+    });
 }
 
 function ValidateInput(value) {

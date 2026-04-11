@@ -30,8 +30,24 @@ function clear() {
     return { input: "", out: "0" };
 }
 
+function formatInputDisplay(str) {
+    if (!str) return "";
+    
+    let cleanStr = str.toString().replace(/\s/g, "");
+    
+    return cleanStr.replace(/\d+(?:\.\d+)?/g, (number) => {
+        let [integer, decimal] = number.split(".");
+
+        let formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return decimal !== undefined ? `${formattedInteger}.${decimal}` : formattedInteger;
+    });
+}
+
 function calculate(inputStr) {
     if (inputStr === "") return null;
+
+    inputStr = inputStr.replace(/\s/g, "")
+
     let openBrackets = (inputStr.match(/\(/g) || []).length;
     let closeBrackets = (inputStr.match(/\)/g) || []).length;
     for (let i = 0; i < openBrackets - closeBrackets; i++) {
@@ -56,7 +72,7 @@ function calculate(inputStr) {
 }
 
 function toggleSign(input, lastResult, justCalculated) {
-    let current = input;
+    let current = input.toString().replace(/\s/g, "");
     if (justCalculated && lastResult !== null) current = lastResult.toString();
     if (current === "" || current === "0") {
         return current;
