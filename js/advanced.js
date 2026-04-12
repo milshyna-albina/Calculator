@@ -36,6 +36,7 @@ for (let key of advKeys) {
         event.stopImmediatePropagation();
 
         const value = key.dataset.key;
+        let input = "";
         const isConverterMode = document.querySelector('.display').classList.contains('mode-conv');
         if (isConverterMode) {
             if (typeof activeConverterInput !== 'undefined' && activeConverterInput) {

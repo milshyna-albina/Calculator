@@ -195,20 +195,19 @@ function updateNumeralButtons() {
             return;
         }
         if (base === 2) {
-            if (key === "0" || key === "1") {
+            if (/^[01]$/.test(key)) {
                 btn.disabled = false;
                 btn.classList.remove("disabled");
             }
         } else if (base === 10) {
-            if (!isNaN(key) && key.length === 1) {
+            if (/^\d$/.test(key)) {
                 btn.disabled = false;
                 btn.classList.remove("disabled");
             }
         } else if (base === 16) {
             const isHexLetter = ["A", "B", "C", "D", "E", "F"].includes(key);
-            const isDigit = !isNaN(key) && key.length === 1;
 
-            if (isDigit || isHexLetter) {
+            if (/^\d$/.test(key) || isHexLetter) {
                 btn.disabled = false;
                 btn.classList.remove("disabled");
             }
