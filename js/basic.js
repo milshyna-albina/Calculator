@@ -25,19 +25,6 @@ function clear() {
     return { input: "", out: "0" };
 }
 
-function formatInputDisplay(str) {
-    if (!str) return "";
-    
-    let cleanStr = str.toString().replace(/\s/g, "");
-    
-    return cleanStr.replace(/\d+(?:\.\d+)?/g, (number) => {
-        let [integer, decimal] = number.split(".");
-
-        let formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-        return decimal !== undefined ? `${formattedInteger}.${decimal}` : formattedInteger;
-    });
-}
-
 function calculate(inputStr) {
     if (inputStr === "") return null;
     if (/([÷×\/*%^]){2,}/.test(inputStr)) {
@@ -48,8 +35,8 @@ function calculate(inputStr) {
     try {
         let prepared = inputStr.replace(/(\d+)!/g, (match, num) => calculateFactorial(parseInt(num)));
         prepared = prepared.replace(/(\d)\(/g, "$1*(").replace(/\)(\d)/g, ")*$1").replace(/\)\(/g, ")*(");
-        prepared = prepared.replace(/√\(([^)]+)\)/g, "Math.sqrt($1)");
-        prepared = prepared.replace(/√(\d+(?:\.\d+)?)/g, "Math.sqrt($1)");
+        prepared = prepared.replace(/(√+)\(([^)]+)\)/g, (match, roots, expr) => "Math.sqrt(".repeat(roots.length) + expr + ")".repeat(roots.length));
+        prepared = prepared.replace(/(√+)(\d+(?:\.\d+)?)/g, (match, roots, num) => "Math.sqrt(".repeat(roots.length) + num + ")".repeat(roots.length));
 
         prepared = prepared.replace(/×/g, "*").replace(/÷/g, "/");
         prepared = prepared.replace(/%(\d)/g, "% * $1");

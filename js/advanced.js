@@ -52,13 +52,17 @@ for (let key of advKeys) {
                     }
                 } 
                 else if (value === "^") {
-                    if (currentVal !== "" && currentVal !== "0" && !/[+\-×÷%(^]$/.test(lastChar)) {
-                        activeConverterInput.value += "^";
+                    if (currentVal === "" || currentVal === "0") {
+                        activeConverterInput.textContent = "0^";
+                    } else if (!/[+\-×÷%(^]$/.test(lastChar)) {
+                        activeConverterInput.textContent += "^";
                     }
                 } 
                 else if (value === "!") {
-                    if (currentVal !== "" && currentVal !== "0" && (/[0-9.]/.test(lastChar) || lastChar === ")")) {
-                        activeConverterInput.value += "!";
+                    if (currentVal === "" || currentVal === "0") {
+                        activeConverterInput.textContent = "0!";
+                    } else if (/[0-9.]/.test(lastChar) || lastChar === ")") {
+                        activeConverterInput.textContent += "!";
                     }
                 }
                 
@@ -90,12 +94,16 @@ for (let key of advKeys) {
             }
         } 
         else if (value === "^") {
-            if (input !== "" && !/[+\-×÷%(^]$/.test(lastChar)) {
+           if (input === "") {
+                input = "0^";
+            } else if (!/[+\-×÷%(^]$/.test(lastChar)) {
                 input += "^";
             }
         } 
         else if (value === "!") {
-            if (input !== "" && (/[0-9.]/.test(lastChar) || lastChar === ")")) {
+            if (input === "") {
+                input = "0!";
+            } else if (/[0-9.]/.test(lastChar) || lastChar === ")") {
                 input += "!";
             }
         }

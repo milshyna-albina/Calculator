@@ -2,9 +2,9 @@ let currentConverter = "length";
 let activeConverterInput = null;
 
 const converters = {
-    length: { mm: 0.001, cm: 0.01, m: 1, km: 1000 },
-    weight: { g: 0.001, kg: 1, t: 1000 },
-    area: { mm2: 0.000001, cm2: 0.0001, m2: 1, km2: 1000000 }
+    length: { mm: 0.001, cm: 0.01, m: 1, km: 1000, mi: 1609.344},
+    weight: { mg: 0.000001, g: 0.001, kg: 1, lb: 0.45359237, t: 1000 },
+    area: { mm2: 0.000001, cm2: 0.0001, m2: 1, km2: 1000000, mi2: 2589988.110336 }
 };
 
 function noDuplicateUnits() {

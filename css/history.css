@@ -116,7 +116,8 @@
     justify-content: center;
     align-items: center;
     gap: 6px;
-    white-space: nowrap;
+    flex-wrap: wrap;
+    padding: 0 24px;
 }
 
 .history-item .exp, .history-item .res {

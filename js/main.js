@@ -135,7 +135,9 @@ for (let key of keys) {
             adjustDisplay(display_output);
             display_input.innerHTML = "";
             adjustDisplay(display_input);
+            justCalculated = false;
         } else if (value === "=") {
+            input = input.replace(/\.(?=[+\-×÷%)]|$)/g, "");
             const res = calculate(input);
             if (res === "Error" || !isFinite(res)) {
                 display_output.innerHTML = res === "Error" ? "Error" : "Undefined";
