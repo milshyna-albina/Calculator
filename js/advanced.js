@@ -36,11 +36,10 @@ for (let key of advKeys) {
         event.stopImmediatePropagation();
 
         const value = key.dataset.key;
-        let input = "";
         const isConverterMode = document.querySelector('.display').classList.contains('mode-conv');
         if (isConverterMode) {
             if (typeof activeConverterInput !== 'undefined' && activeConverterInput) {
-                let currentVal = activeConverterInput.value;
+                let currentVal = activeConverterInput.textContent;
                 let lastChar = currentVal.slice(-1);
                 
                 if (value === "√") {
@@ -55,7 +54,7 @@ for (let key of advKeys) {
                 else if (value === "^") {
                     if (currentVal === "" || currentVal === "0") {
                         activeConverterInput.textContent = "0^";
-                    } else if (!/[+\-×÷%(^]$/.test(lastChar)) {
+                    } else if (!/[+\-×÷%(^√]$/.test(lastChar)) {
                         activeConverterInput.textContent += "^";
                     }
                 } 
@@ -77,7 +76,7 @@ for (let key of advKeys) {
             if (value === "√") {
                 input = "√"; 
             } else {
-                input = lastResult?.toString() || "";
+                input = (lastResult !== null && lastResult !== "Error" && lastResult !== "Undefined") ? lastResult.toString() : "0";
                 input += value;
             }
             justCalculated = false;
