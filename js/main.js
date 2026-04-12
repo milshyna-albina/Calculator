@@ -46,8 +46,8 @@ for (let key of keys) {
                     if (inputField && resultField && fromUnit && toUnit) {
                         const valBefore = inputField.textContent;
                         const valAfter = resultField.textContent;
-                        const unit1 = fromUnit.textContent;
-                        const unit2 = toUnit.textContent;
+                        const unit1 = fromUnit.value;
+                        const unit2 = toUnit.value;
                         if (valBefore && valAfter) {
                             save(`${valBefore} ${unit1}`, `${valAfter} ${unit2}`);
                         }
@@ -89,19 +89,19 @@ for (let key of keys) {
                     if (/[0-9A-Fa-f+\-*/%()!^√.]/.test(mathValue)) {
                         if (fromBase === 2) {
                             if (activeConverterInput.textContent === "0" && mathValue !== "0") {
-                                activeConverterInput.textContent = mathValue.toUpperCase();
+                                activeConverterInput.textContent = value.toUpperCase();
                             } else {
-                                activeConverterInput.textContent += mathValue.toUpperCase();
+                                activeConverterInput.textContent += value.toUpperCase();
                             }
                         }
-                        else if (fromBase === 16 && mathValue.toUpperCase() === "C") {
+                        else if (fromBase === 16 && value.toUpperCase() === "C") {
                             activeConverterInput.textContent = (activeConverterInput.textContent === "0") ? "C" : activeConverterInput.textContent + "C";
                         }
                         else {
                             if (activeConverterInput.textContent === "0" && !/[+\-*/()]/.test(mathValue)) {
-                                activeConverterInput.textContent = mathValue.toUpperCase();
+                                activeConverterInput.textContent = value.toUpperCase();
                             } else {
-                                activeConverterInput.textContent += mathValue.toUpperCase();
+                                activeConverterInput.textContent += value.toUpperCase();
                             }
                         }
                     }
@@ -308,7 +308,7 @@ document.addEventListener('paste', (e) => {
     const display = document.querySelector('.display');
     const isNumeral = display.classList.contains('mode-numeral');
     const isConverter = display.classList.contains('mode-conv');
-    let allowedChars = "";
+    let allowedChars;
     let targetField = "display";
 
     if (isNumeral) {
