@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="description" content="Calculator">
-  <title>PICK-ME Calculator</title>
+  <title>Calculator</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/menu.css">
   <link rel="stylesheet" href="css/conventer.css">
@@ -13,9 +13,6 @@
 
 <body>
   <h1>Calculator &lt;3 </h1>
-  <p>Welcome to the Pick-Me Calculator!! Hey… use me!!<br>
-    I'll calculate anything for you…♡♡♡ <br> I'm not like other
-    calculators!! &gt;_&lt; </p>
 
   <div class="calculator">
 
@@ -80,7 +77,7 @@
 
       <div class="converter-screen">
         <div class="conv-row from">
-          <input type="text" class="conv-input" id="inputFrom" readonly>
+          <div class="conv-input" id="inputFrom" tabindex="0">0</div>
           <select class="conv-select" id="unitFrom">
             <option value="mm">mm</option>
             <option value="cm" selected>cm</option>
@@ -106,7 +103,7 @@
 
       <div class="numeral-screen">
         <div class="conv-row from">
-          <input type="text" class="conv-input" id="numeralInput" readonly>
+          <div class="conv-input" id="numeralInput" tabindex="0">0</div>
           <select class="conv-select" id="numeralFrom">
             <option value="10">Decimal</option>
             <option value="2">Binary</option>

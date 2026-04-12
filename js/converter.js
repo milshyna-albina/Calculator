@@ -63,7 +63,7 @@ function convert() {
     const result = document.getElementById("resultTo");
     const from = document.getElementById("unitFrom");
     const to = document.getElementById("unitTo");
-    let expression = input.value;
+    let expression = input.textContent;
     let value = 0;
 
     if (!input || !result) {

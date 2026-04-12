@@ -7,7 +7,7 @@ function convertNumeral() {
         return;
     }
 
-    let value = numeralInput.value.trim();
+    let value = numeralInput.textContent.trim();
     if (!value || value === "0") {
         numeralResult.textContent = "0";
         return;
@@ -224,7 +224,7 @@ function calculateNumeralExpression() {
     }
 
     const base = parseInt(fromSelect.value);
-    let expression = numInput.value;
+    let expression = numInput.textContent;
     try {
         const decimalExpression = expression.replace(/[0-9A-F]+/gi, (match) => {
             return parseInt(match, base).toString(10);

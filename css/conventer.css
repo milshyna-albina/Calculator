@@ -41,6 +41,11 @@
     margin-right: 10px;
     overflow-x: auto;     
     white-space: nowrap;
+    overflow-y: hidden;
+    display: block;
+    scroll-behavior: smooth;
+    scrollbar-gutter: auto;
+    height: 32px;
 }
 
 .conv-select {
@@ -94,4 +99,25 @@ button.disabled {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.conv-input::-webkit-scrollbar,
+.conv-result::-webkit-scrollbar {
+    height: 0;
+}
+
+.conv-input:hover::-webkit-scrollbar,
+.conv-result:hover::-webkit-scrollbar {
+    height: 3px;
+}
+
+.conv-input::-webkit-scrollbar-thumb,
+.conv-result::-webkit-scrollbar-thumb {
+    background: #E68BBE;
+    border-radius: 10px;
+}
+
+.conv-input::-webkit-scrollbar-track,
+.conv-result::-webkit-scrollbar-track {
+    background: #FCE4DE;
 }

@@ -49,7 +49,7 @@ h1 {
   flex-direction: column;
   height: 100%;
   justify-content: flex-end;
-  gap: 5px;
+  gap: 3px;
   padding: 10px;
 }
 
@@ -63,28 +63,49 @@ h1 {
   width: 100%;
   outline: none;
   padding: 0;
-  margin-top: 5px;
 }
 
 .result-line {
   font-size: 35px;
-  line-height: 1.3;
   color: #842323;
   width: 100%;
   text-align: right;
 }
 
-.input-line, .result-line {
-  white-space: nowrap;      
-  overflow-x: auto;        
-  overflow-y: hidden;    
-  max-width: 100%;           
+.input-line,
+.result-line {
+  max-width: 280px;
+  min-height: 32px;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
 }
 
-/* .conv-input::-webkit-scrollbar, 
-.conv-result::-webkit-scrollbar {
-    display: none;
-} */
+.input-line::-webkit-scrollbar,
+.result-line::-webkit-scrollbar {
+  height: 0;
+}
+
+.input-line:hover::-webkit-scrollbar,
+.result-line:hover::-webkit-scrollbar {
+  height: 3px;
+}
+
+.input-line::-webkit-scrollbar-track,
+.result-line::-webkit-scrollbar-track {
+  background: #FCE4DE;
+  border-radius: 10px;
+}
+
+.input-line::-webkit-scrollbar-thumb,
+.result-line::-webkit-scrollbar-thumb {
+  background: #E68BBE;
+  border-radius: 10px;
+}
 
 .grid {
   display: grid;

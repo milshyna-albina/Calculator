@@ -12,21 +12,16 @@ function clear() {
 
     const numInput = document.getElementById("numeralInput");
     const numResult = document.getElementById("numeralResult");
-    if (numInput) {
-        numInput.value = "0";
-    }
-    if (numResult) {
-        numResult.textContent = "0";
-    }
-
     const convInput = document.getElementById("inputFrom");
-    if (convInput) {
-        convInput.value = "0";
-    }
+
+    if (numInput) numInput.textContent = "0";
+    if (numResult) numResult.textContent = "0";
+    if (convInput) convInput.textContent = "0";
+
     if (typeof convert === "function") {
         convert();
     }
-
+    lastResult = null;
     return { input: "", out: "0" };
 }
 
@@ -45,27 +40,35 @@ function formatInputDisplay(str) {
 
 function calculate(inputStr) {
     if (inputStr === "") return null;
-
-    inputStr = inputStr.replace(/\s/g, "")
-
-    let openBrackets = (inputStr.match(/\(/g) || []).length;
-    let closeBrackets = (inputStr.match(/\)/g) || []).length;
-    for (let i = 0; i < openBrackets - closeBrackets; i++) {
-        inputStr += ")";
+    if (/([÷×\/*%^]){2,}/.test(inputStr)) {
+        return "Error";
     }
+    inputStr = inputStr.replace(/\s/g, "")
 
     try {
         let prepared = inputStr.replace(/(\d+)!/g, (match, num) => calculateFactorial(parseInt(num)));
-        
+        prepared = prepared.replace(/(\d)\(/g, "$1*(").replace(/\)(\d)/g, ")*$1").replace(/\)\(/g, ")*(");
         prepared = prepared.replace(/√\(([^)]+)\)/g, "Math.sqrt($1)");
         prepared = prepared.replace(/√(\d+(?:\.\d+)?)/g, "Math.sqrt($1)");
-        
-        prepared = prepared.replace(/×/g, "*")
-                           .replace(/÷/g, "/")
-                           .replace(/%/g, "/100")
-                           .replace(/\^/g, "**");
 
-        return Function(`return ${prepared}`)();
+        prepared = prepared.replace(/×/g, "*").replace(/÷/g, "/");
+        prepared = prepared.replace(/%(\d)/g, "% * $1");
+
+        prepared = prepared.replace(/([\*\/])\s*(\d+\.?\d*)%/g, "$1 ($2/100)");
+        prepared = prepared.replace(/(\d+\.?\d*)%\s*([\*\/])/g, "($1/100) $2");
+
+        while (prepared.includes('%')) {
+            let match = prepared.match(/([\d.)]+)\s*([+\-])\s*(\d+\.?\d*)%/);
+            if (match) {
+                prepared = prepared.replace(match[0], `(${match[1]}${match[2]}(${match[1]}*${match[3]}/100))`);
+            } else {
+                prepared = prepared.replace(/(\d+\.?\d*)%/g, "($1/100)");
+            }
+        }
+        prepared = prepared.replace(/\^/g, "**");
+
+        const result = Function(`return ${prepared}`)();
+        return Number.isFinite(result) ? parseFloat(result.toFixed(10)) : result;
     } catch (e) {
         return "Error";
     }

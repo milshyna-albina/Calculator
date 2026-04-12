@@ -17,10 +17,10 @@ function switchMode(name) {
     const mainResultLine = document.querySelector(".result-line");
 
     if (display.classList.contains("mode-conv") && convInput) {
-        window.globalValue = convInput.value;
+        window.globalValue = convInput.textContent;
     } else if (display.classList.contains("mode-numeral")) {
         if (numInput && numFrom) {
-            const rawValue = numInput.value.trim();
+            const rawValue = numInput.textContent.trim();
             const base = parseInt(numFrom.value);
             try {
                 let decimalValue = parseInt(rawValue, base);
@@ -64,14 +64,14 @@ function switchMode(name) {
         currentConverter = name;
         display.classList.add("mode-conv");
         updateUnits(name);
-        if (convInput) convInput.value = window.globalValue;
+        if (convInput) convInput.textContent = window.globalValue;
         activeConverterInput = convInput;
         convert();
     } else if (name === "numeral") {
         display.classList.add("mode-numeral");
         if (numInput) {
             let cleanValue = window.globalValue.replace(/[^0-9a-fA-F.]/g, '');
-            numInput.value = cleanValue || "0";
+            numInput.textContent = cleanValue || "0";
             if (typeof convertNumeral === "function") {
                 convertNumeral();
             }

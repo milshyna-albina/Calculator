@@ -21,12 +21,12 @@ for (let key of keys) {
             const mathValue = value.replace("×", "*").replace("÷", "/");
 
             if (value === "AC" || (value === "C" && (!isNumeralMode || fromBase !== 16))) {
-                activeConverterInput.value = "0";
+                activeConverterInput.textContent = "0";
             } else if (value === "=") {
                 if (isNumeralMode) {
                     if (typeof calculateNumeralExpression === "function") {
                         const inputField = document.getElementById("numeralInput");
-                        const exprBefore = inputField ? inputField.value : "";
+                        const exprBefore = inputField ? inputField.textContent : "";
                         const fromBase = document.getElementById("numeralFrom")?.value || "10";
                         const toBase = document.getElementById("numeralTo")?.value || "2";
                         calculateNumeralExpression();
@@ -44,24 +44,27 @@ for (let key of keys) {
                     const fromUnit = document.getElementById("unitFrom");
                     const toUnit = document.getElementById("unitTo");
                     if (inputField && resultField && fromUnit && toUnit) {
-                        const valBefore = inputField.value;
-                        const valAfter = resultField.textContent || resultField.value;
-                        const unit1 = fromUnit.value;
-                        const unit2 = toUnit.value;
+                        const valBefore = inputField.textContent;
+                        const valAfter = resultField.textContent;
+                        const unit1 = fromUnit.textContent;
+                        const unit2 = toUnit.textContent;
                         if (valBefore && valAfter) {
                             save(`${valBefore} ${unit1}`, `${valAfter} ${unit2}`);
+                        }
+                        if (resultField) {
+                            resultField.scrollLeft = resultField.scrollWidth;
                         }
                     }
                 }
             } else if (value === "+/-") {
-                if (activeConverterInput.value !== "0") {
-                    activeConverterInput.value = activeConverterInput.value.startsWith("-")
-                        ? activeConverterInput.value.substring(1)
-                        : "-" + activeConverterInput.value;
+                if (activeConverterInput.textContent !== "0") {
+                    activeConverterInput.textContent = activeConverterInput.textContent.startsWith("-")
+                        ? activeConverterInput.textContent.substring(1)
+                        : "-" + activeConverterInput.textContent;
                 }
             } else {
                 const displayOps = ["+", "-", "×", "÷", "%"];
-                let currentVal = activeConverterInput.value;
+                let currentVal = activeConverterInput.textContent;
                 let lastChar = currentVal.slice(-1);
                 let secondLastChar = currentVal.slice(-2, -1);
 
@@ -69,13 +72,13 @@ for (let key of keys) {
                     if (displayOps.includes(lastChar)) {
                         if (lastChar === "-" && displayOps.includes(secondLastChar)) {
                             if (value !== "-") {
-                                activeConverterInput.value = currentVal.slice(0, -2) + value;
+                                activeConverterInput.textContent = currentVal.slice(0, -2) + value;
                                 activeConverterInput.dispatchEvent(new Event('input'));
                             }
                             return; 
                         } else if (value === "-" && lastChar !== "-") {
                         } else {
-                            activeConverterInput.value = currentVal.slice(0, -1) + value;
+                            activeConverterInput.textContent = currentVal.slice(0, -1) + value;
                             activeConverterInput.dispatchEvent(new Event('input'));
                             return; 
                         }
@@ -85,36 +88,39 @@ for (let key of keys) {
                 if (isNumeralMode) {
                     if (/[0-9A-Fa-f+\-*/%()!^√.]/.test(mathValue)) {
                         if (fromBase === 2) {
-                            if (activeConverterInput.value === "0" && mathValue !== "0") {
-                                activeConverterInput.value = mathValue.toUpperCase();
+                            if (activeConverterInput.textContent === "0" && mathValue !== "0") {
+                                activeConverterInput.textContent = mathValue.toUpperCase();
                             } else {
-                                activeConverterInput.value += mathValue.toUpperCase();
+                                activeConverterInput.textContent += mathValue.toUpperCase();
                             }
                         }
                         else if (fromBase === 16 && mathValue.toUpperCase() === "C") {
-                            activeConverterInput.value = (activeConverterInput.value === "0") ? "C" : activeConverterInput.value + "C";
+                            activeConverterInput.textContent = (activeConverterInput.textContent === "0") ? "C" : activeConverterInput.textContent + "C";
                         }
                         else {
-                            if (activeConverterInput.value === "0" && !/[+\-*/()]/.test(mathValue)) {
-                                activeConverterInput.value = mathValue.toUpperCase();
+                            if (activeConverterInput.textContent === "0" && !/[+\-*/()]/.test(mathValue)) {
+                                activeConverterInput.textContent = mathValue.toUpperCase();
                             } else {
-                                activeConverterInput.value += mathValue.toUpperCase();
+                                activeConverterInput.textContent += mathValue.toUpperCase();
                             }
                         }
                     }
                 } else if (isConverterMode) {
                     if (/[0-9.+\-*/%]/.test(mathValue)) {
                         if (mathValue === "." ) {
-                            const parts = activeConverterInput.value.split(/[+\-×÷%]/);
+                            const parts = activeConverterInput.textContent.split(/[+\-×÷%]/);
                             if (parts[parts.length - 1].includes(".")) {
                                 return;
                             }
                         }
-                        activeConverterInput.value = (activeConverterInput.value === "0" && /[0-9(]/.test(mathValue)) ? mathValue : activeConverterInput.value + value;
+                        activeConverterInput.textContent = (activeConverterInput.textContent === "0" && /[0-9(]/.test(mathValue)) ? mathValue : activeConverterInput.textContent + value;
                     }
                 }
             }
             activeConverterInput.dispatchEvent(new Event('input'));
+            setTimeout(() => {
+                activeConverterInput.scrollLeft = activeConverterInput.scrollWidth;
+            }, 10);
             return;
         }
         if (justCalculated && /[0-9.]/.test(value)) {
@@ -151,21 +157,25 @@ for (let key of keys) {
         } else if (value === "+/-") {
             input = toggleSign(input, lastResult, justCalculated);
             justCalculated = false;
-            display_output.innerHTML = CleanInput(input);
+            display_output.innerHTML = CleanInput(input) || "0";
             adjustDisplay(display_output);
         } else if (value === "MR") {
             let mem = memoryRecall();
-            if (mem === 0) {
-                input = "0";
-            } else {
-                const lastNumberMatch = input.match(/(\(-\d+\.?\d*\)?|(?<=[+×÷%-])-|\d+\.?\d*)$/);
-                if (lastNumberMatch) {
-                    input = input.substring(0, lastNumberMatch.index) + mem.toString();
-                } else {
-                    input += mem.toString();
-                }
+            if (justCalculated) {
+                input = "";
+                display_input.style.display = "none";
+                justCalculated = false;
             }
-            display_output.innerHTML = CleanInput(input);
+            if (input === "" || input === "0") {
+                input = mem.toString();
+            } else {
+                let lastChar = input.slice(-1);
+                if (/[0-9)%]/.test(lastChar)) {
+                    input += "×";
+                }
+                input += mem.toString();
+            }
+            display_output.innerHTML = CleanInput(input) || input;
             adjustDisplay(display_output);
         } else if (value === "MC") {
             memoryClear();
@@ -186,12 +196,15 @@ for (let key of keys) {
                 }
             }
             if (ValidateInput(value)) {
+                if (input === "" && ["+", "-", "×", "÷", "%"].includes(value) && value !== "-") {
+                    input = "0";
+                }
                 if (replaceNextNumber && /[0-9.]/.test(value)) {
                     input = input.replace(/\d+\.?\d*$/, "");
                     replaceNextNumber = false;
                 }
                 const lastNumberMatch = input.match(/(\d+\.?\d*)$/);
-                if (lastNumberMatch && lastNumberMatch[0] === "0" && value !== ".") {
+                if (lastNumberMatch && lastNumberMatch[0] === "0" && value !== "." && !["+", "-", "×", "÷", "%"].includes(value)) {
                     input = input.substring(0, lastNumberMatch.index);
                 }
                 let lastChar = input.slice(-1);
@@ -199,6 +212,9 @@ for (let key of keys) {
                     input += "×";
                 }
                 if (value === "(" && (/[0-9.]/.test(lastChar) || lastChar === ")")) {
+                    input += "×";
+                }
+                if (lastChar === "%" && /[0-9]/.test(value)) {
                     input += "×";
                 }
                 input += value;
@@ -225,7 +241,9 @@ function adjustDisplay(element) {
         element.style.fontSize = baseFontSize + "px";
     }
 
-    element.scrollLeft = element.scrollWidth;
+    setTimeout(() => {
+        element.scrollLeft = element.scrollWidth;
+    }, 50);
 }
 
 function CleanInput(input) {
@@ -256,6 +274,9 @@ function ValidateInput(value) {
     if (changingSign) return true;
     let last = input.slice(-1);
     const operators = ["+", "-", "×", "÷", "%"];
+    if (last === "%" && operators.includes(value) && value !== "%") {
+        return true;
+    }
     if (operators.includes(value) && ["×", "÷", "%"].includes(input.slice(-2, -1)) && last === "-") {
         input = input.slice(0, -1);
         last = input.slice(-1);
@@ -283,6 +304,7 @@ function ValidateInput(value) {
 document.addEventListener('paste', (e) => {
     e.preventDefault();
     const rawText = (e.clipboardData || window.clipboardData).getData('text');
+    let normalized = rawText.replace(/[×*]/g, "×").replace(/[÷/]/g, "÷");
     const display = document.querySelector('.display');
     const calculator = document.querySelector('.calculator');
     const isNumeral = display.classList.contains('mode-numeral');
@@ -301,18 +323,16 @@ document.addEventListener('paste', (e) => {
         } else {
             allowedChars = "0-9";
         }
-        allowedChars += "\\+\\-\\*/%\\.";
+        allowedChars += "\\+\\-\\*/%×÷\\.";
     } else if (isConverter) {
         targetField = "input";
-        allowedChars = "0-9\\.\\+\\-\\*/%";
-    } else if (isAdvanced) {
-        allowedChars = "0-9\\.\\+\\-\\*/%\\(\\)\\!\\^√";
+        allowedChars = "0-9\\.\\+\\-\\*/%×÷";
     } else {
-        allowedChars = "0-9\\.\\+\\-\\*/%";
+        allowedChars = "0-9\\.\\+\\-\\%×÷\\(\\)\\!\\^√";
     }
 
     const regex = new RegExp(`[^${allowedChars}]`, 'g');
-    let cleanText = rawText.replace(regex, '');
+    let cleanText = normalized.replace(regex, '');
     if (!cleanText) {
         return;
     }
@@ -329,6 +349,14 @@ document.addEventListener('paste', (e) => {
         }
     } else {
         if (typeof input !== 'undefined') {
+            if (justCalculated) {
+                input = "";
+                if (display_input) {
+                    display_input.style.display = "none";
+                    display_input.innerHTML = "";
+                }
+                justCalculated = false;
+            }
             if (input === "0") {
                 input = cleanText;
             } else {
@@ -337,6 +365,9 @@ document.addEventListener('paste', (e) => {
             const resultLine = document.querySelector('.result-line');
             if (resultLine) {
                 resultLine.innerHTML = (typeof CleanInput === 'function') ? CleanInput(input) : input;
+                if (typeof adjustDisplay === 'function') {
+                    adjustDisplay(resultLine);
+                }
             }
         }
     }
