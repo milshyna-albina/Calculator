@@ -306,10 +306,8 @@ document.addEventListener('paste', (e) => {
     const rawText = (e.clipboardData || window.clipboardData).getData('text');
     let normalized = rawText.replace(/[×*]/g, "×").replace(/[÷/]/g, "÷");
     const display = document.querySelector('.display');
-    const calculator = document.querySelector('.calculator');
     const isNumeral = display.classList.contains('mode-numeral');
     const isConverter = display.classList.contains('mode-conv');
-    const isAdvanced = calculator.classList.contains('mode-advanced');
     let allowedChars = "";
     let targetField = "display";
 
@@ -339,13 +337,19 @@ document.addEventListener('paste', (e) => {
     if (targetField === "input") {
         const inputElement = isNumeral ? document.getElementById('numeralInput') : document.getElementById('inputFrom');
         if (inputElement) {
-            if (inputElement.value === "0") {
-                inputElement.value = cleanText.toUpperCase();
+            if (inputElement.textContent === "0") {
+                inputElement.textContent = cleanText.toUpperCase();
             } else {
-                inputElement.value += cleanText.toUpperCase();
+                inputElement.textContent += cleanText.toUpperCase();
             }
-            inputElement.dispatchEvent(new Event('input'));
-            if (isNumeral && typeof calculateNumeralExpression === "function") calculateNumeralExpression();
+            if (isNumeral && typeof calculateNumeralExpression === "function") {
+                calculateNumeralExpression();
+            } else if (isConverter && typeof convert === "function") {
+                convert();
+            }
+            setTimeout(() => {
+                inputElement.scrollLeft = inputElement.scrollWidth;
+            }, 10);
         }
     } else {
         if (typeof input !== 'undefined') {
