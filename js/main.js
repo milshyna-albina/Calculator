@@ -75,18 +75,24 @@ for (let key of keys) {
                                 activeConverterInput.textContent = currentVal.slice(0, -2) + value;
                                 activeConverterInput.dispatchEvent(new Event('input'));
                             }
-                            return; 
-                        } else if (value === "-" && lastChar !== "-") {
-                        } else {
-                            activeConverterInput.textContent = currentVal.slice(0, -1) + value;
+                            return;
+                        } else if (displayOps.includes(lastChar) && lastChar !== "%") {
+                            if (lastChar === "-" && displayOps.includes(secondLastChar)) {
+                                activeConverterInput.textContent = currentVal.slice(0, -2) + value;
+                            } else {
+                                activeConverterInput.textContent = currentVal.slice(0, -1) + value;
+                            }
                             activeConverterInput.dispatchEvent(new Event('input'));
-                            return; 
+                            return;
                         }
                     }
                 }
 
                 if (isNumeralMode) {
                     if (/[0-9A-Fa-f+\-*/%()!^√.]/.test(mathValue)) {
+                        if (lastChar === "%") {
+                            activeConverterInput.textContent += "×";
+                        }
                         if (fromBase === 2) {
                             if (activeConverterInput.textContent === "0" && mathValue !== "0") {
                                 activeConverterInput.textContent = value.toUpperCase();
@@ -112,6 +118,9 @@ for (let key of keys) {
                             if (parts[parts.length - 1].includes(".")) {
                                 return;
                             }
+                        }
+                        if (lastChar === "%") {
+                            activeConverterInput.textContent += "×";
                         }
                         activeConverterInput.textContent = (activeConverterInput.textContent === "0" && /[0-9(]/.test(mathValue)) ? mathValue : activeConverterInput.textContent + value;
                     }
