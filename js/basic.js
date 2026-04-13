@@ -40,7 +40,7 @@ function calculate(inputStr) {
 
         prepared = prepared.replace(/×/g, "*").replace(/÷/g, "/");
         prepared = prepared.replace(/%(\d)/g, "% * $1");
-
+        prepared = prepared.replace(/(\([^)]+\))%/g, "($1/100)");
         prepared = prepared.replace(/([*\/])\s*(\d+\.?\d*)%/g, "$1 ($2/100)");
         prepared = prepared.replace(/(\d+\.?\d*)%\s*([*\/])/g, "($1/100) $2");
 
