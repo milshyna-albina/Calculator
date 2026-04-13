@@ -27,7 +27,7 @@ function clear() {
 
 function calculate(inputStr) {
     if (inputStr === "") return null;
-    if (/([÷×\/*%^]){2,}/.test(inputStr)) {
+    if (/([÷×\/*^]){2,}/.test(inputStr)) {
         return "Error";
     }
     inputStr = inputStr.replace(/\s/g, "")

@@ -43,12 +43,12 @@ for (let key of advKeys) {
                 let lastChar = currentVal.slice(-1);
                 
                 if (value === "√") {
-                    if (currentVal === "0") {
-                        activeConverterInput.value = "√";
+                    if (currentVal === "0" || currentVal === "") {
+                        activeConverterInput.textContent = "√";
                     } else if (/[0-9.]/.test(lastChar) || lastChar === ")") {
-                        activeConverterInput.value += "×√";
+                        activeConverterInput.textContent+= "×√";
                     } else {
-                        activeConverterInput.value += "√";
+                        activeConverterInput.textContent += "√";
                     }
                 } 
                 else if (value === "^") {
@@ -87,7 +87,9 @@ for (let key of advKeys) {
         let lastChar = input.slice(-1);
 
         if (value === "√") {
-            if (/[0-9.]/.test(lastChar) || lastChar === ")") {
+            if (input === "" || input === "0") {
+                input = "√";
+            } else if (/[0-9.]/.test(lastChar) || lastChar === ")") {
                 input += "×√";
             } else {
                 input += "√";
@@ -96,7 +98,7 @@ for (let key of advKeys) {
         else if (value === "^") {
            if (input === "") {
                 input = "0^";
-            } else if (!/[+\-×÷%(^]$/.test(lastChar)) {
+            } else if (!/[+\-×÷%(^√]$/.test(lastChar)) {
                 input += "^";
             }
         } 

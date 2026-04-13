@@ -275,7 +275,27 @@ function CleanInput(input) {
 function ValidateInput(value) {
     if (changingSign) return true;
     let last = input.slice(-1);
+    let secondLast = input.slice(-2, -1);
     const operators = ["+", "-", "×", "÷", "%"];
+    if (value === ")") {
+        let openCount = (input.match(/\(/g) || []).length;
+        let closeCount = (input.match(/\)/g) || []).length;
+
+        if (closeCount >= openCount) {
+            return false;
+        }
+        if (last === "(" || operators.includes(last) || last === "√" || last === "^") {
+            return false;
+        }
+    }
+    if (operators.includes(value) && value !== "-") {
+        if (last === "^" || last === "√") {
+            return false;
+        }
+        if (last === "-" && (secondLast === "^" || secondLast === "√")) {
+            return false; 
+        }
+    }
     if (last === "%" && operators.includes(value) && value !== "%") {
         return true;
     }
